@@ -10,7 +10,7 @@ const Footer = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=footer&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=footer&language=EN`)
       .then(res => {
         console.log('res.data', res.data);
         setData(res.data.view);

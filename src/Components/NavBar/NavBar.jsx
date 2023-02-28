@@ -13,7 +13,7 @@ const NavBar = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=navbar&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=navbar&language=EN`)
       .then(res => {
         setData(res.data.view);
       })

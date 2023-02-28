@@ -43,7 +43,7 @@ const UserDetailsView = () => {
   const [countries, setCountries] = useState(null);
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=riderloginform&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=riderloginform&language=EN`)
       .then(res => {
         console.log('countries', res.data.view.content.register.first.inputs.filter(el => el.title === 'Country')[0].values);
         setCountries(res.data.view.content.register.first.inputs.filter(el => el.title === 'Country')[0].values);
