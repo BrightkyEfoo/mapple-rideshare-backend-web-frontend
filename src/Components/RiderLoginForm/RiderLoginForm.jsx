@@ -108,11 +108,13 @@ const RiderLoginForm = () => {
         console.log('err', err);
       });
   };
+  const [digitsString , setDigitsString]=useState('')
   const handleDigitsChange = value => {
     setForm(prev => {
       prev.code = value.asNumber;
       return { ...prev };
     });
+    setDigitsString(value.asString)
   };
 
   const handleLogin1 = abc => {
@@ -121,6 +123,7 @@ const RiderLoginForm = () => {
         .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password })
         .then(res => {
           console.log('res.data', res.data);
+          localStorage.setItem('token' , res.data.token)
           dispatch(RiderLoginFormActions.goForward());
         })
         .catch(err => {
@@ -306,7 +309,7 @@ const RiderLoginForm = () => {
               <p>{data.content.register.second.main.button}</p>
             </div>
             <div>
-              <button className={form.code.toString().length === 6 ? 'canSubmit' : 'simple'} onClick={handleSubmit2}>
+              <button className={digitsString.length === 6 ? 'canSubmit' : 'simple'} onClick={handleSubmit2}>
                 {data.content.register.second.button.title}
               </button>
             </div>
@@ -383,7 +386,7 @@ const RiderLoginForm = () => {
               <p>{data.content.login.second.main.button}</p>
             </div>
             <div>
-              <button className={form.code.toString().length === 6 ? 'canSubmit' : 'simple'} onClick={handleSubmit2}>
+              <button className={digitsString.length === 6 ? 'canSubmit' : 'simple'} onClick={handleSubmit2}>
                 {data.content.login.second.button.title}
               </button>
             </div>

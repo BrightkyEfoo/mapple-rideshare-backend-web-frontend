@@ -5,8 +5,11 @@ import PhoneInput from 'react-phone-number-input';
 import axios from 'axios';
 import './userDetails.css';
 import { BiImageAdd } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 const UserDetailsView = () => {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
+  const Token = 'Bearer ' + localStorage.getItem('token');
   const [form, setForm] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -58,12 +61,83 @@ const UserDetailsView = () => {
       return { ...prev };
     });
   };
+  const handleSubmit = e => {
+    if (form.password === form.rePassword) {
+      console.log('form', form);
+      console.log('image', image);
+      const keys = Object.keys(form);
+      const data = {
+        userId: user.id,
+        userSubmit: {},
+      };
+      keys.forEach(key => {
+        if (form[key] !== '') {
+          data.userSubmit[key] = form[key];
+        }
+      });
+      console.log('data', data);
+      if (image.preview) {
+        let formData = new FormData();
+        formData.append('addImage', image.data);
+        console.log('formData', formData);
+        axios
+          .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/addImageToServer', formData, {
+            headers: {
+              Authorization: Token,
+            },
+          })
+          .then(res => {
+            data.userSubmit.profilePic = res.data.url;
+            axios
+              .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/', data, {
+                headers: {
+                  Authorization: Token,
+                },
+              })
+              .then(res => {
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                console.log('user', user);
+                navigate('/dashboard');
+                console.log('res.data', res.data);
+              })
+              .catch(err => {
+                console.log('err', err);
+              });
+          })
+          .catch(err => {
+            console.log('err', err);
+          });
+      } else {
+        axios
+          .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/', data, {
+            headers: {
+              Authorization: Token,
+            },
+          })
+          .then(res => {
+            localStorage.setItem('user', JSON.stringify(res.data.user));
+            console.log('user', user);
+            navigate('/dashboard');
+            console.log('res.data', res.data);
+          })
+          .catch(err => {
+            console.log('err', err);
+          });
+      }
+    }
+  };
   return (
     <div className="user-details-edit">
       <p>Edit Account Details</p>
       <div>
         {image.preview || form.profilePic ? (
-          <img src={image.preview || form.profilePic} title='click me to change your profile picture' alt="" className="profilepic" onClick={handleClickImage} />
+          <img
+            src={image.preview || form.profilePic}
+            title="click me to change your profile picture"
+            alt=""
+            className="profilepic"
+            onClick={handleClickImage}
+          />
         ) : (
           <div className="profile-pic-add-div" onClick={handleClickImage}>
             <BiImageAdd size={25} /> <p>Add an image</p>
@@ -150,16 +224,21 @@ const UserDetailsView = () => {
           <input
             type="password"
             autoComplete="new-password"
+            name="password"
             value={form.password}
             onChange={handleChangeByName}
             placeholder="leave it blank to save it unchanged"
           />
         </div>
         <div>
-          <p>re-type your password</p>
+          <div>
+            <p>re-type your password</p>
+            {form.password !== form.rePassword && <p className='err-message'>no matching</p>}
+          </div>
           <input
             type="password"
             autoComplete="new-password"
+            name="rePassword"
             value={form.rePassword}
             onChange={handleChangeByName}
             placeholder="leave it blank to save it unchanged"
@@ -184,7 +263,9 @@ const UserDetailsView = () => {
             I accept newsletters
           </p>
         </div>
-        <button>Submit</button>
+        <button type="button" onClick={handleSubmit}>
+          Submit
+        </button>
       </div>
       <input type="file" ref={inputFileRef} onChange={handleFileChange} />
     </div>

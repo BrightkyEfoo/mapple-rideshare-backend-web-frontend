@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './style.css';
 import { AiOutlineDashboard, AiOutlinePoweroff } from 'react-icons/ai';
 import { HiOutlineLogout } from 'react-icons/hi';
-import { BsFillPersonFill } from 'react-icons/bs';
+import { BsFillPersonFill, BsGraphUp } from 'react-icons/bs';
 import { MdBusinessCenter, MdKeyboardArrowRight } from 'react-icons/md';
 import { IoMdSettings } from 'react-icons/io';
 import { FaShoppingCart, FaUpload } from 'react-icons/fa';
+import { GiMoneyStack } from 'react-icons/gi'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NavBarActions } from '../../rtk/features/NavBarSlice';
@@ -32,8 +33,8 @@ const SideBar = () => {
         className="dashboard-side-bar-button-container"
         onClick={e => dispatch(NavBarActions.setSelected(1))}
       >
-        <MdBusinessCenter size={20} />
-        <p>Events</p>
+        <BsGraphUp size={20} />
+        <p>Book Ride</p>
         <div className="dashboard-side-bar-triangle"></div>
       </div>
       <div
@@ -41,15 +42,15 @@ const SideBar = () => {
         onClick={e =>  dispatch(NavBarActions.setSelected(2))}
       >
         <FaShoppingCart size={20} />
-        <p>Activities</p>
+        <p>Order Ride History</p>
         <div className="dashboard-side-bar-triangle"></div>
       </div>
       <div
         className="dashboard-side-bar-button-container"
         onClick={e => console.log('first', { element: e.target })}
       >
-        <FaUpload size={20} />
-        <p>Opportunities</p>
+        <GiMoneyStack size={20} />
+        <p>Payment</p>
         <div className="dashboard-side-bar-triangle"></div>
       </div>
       <div

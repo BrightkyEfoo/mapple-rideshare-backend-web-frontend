@@ -91,3 +91,16 @@
   border-radius: 30px;
   border : none
 }
+
+.user-details-edit > div:nth-child(2) > div:nth-child(11) > div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-details-edit > div:nth-child(2) > div:nth-child(11) > div > .err-message {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--primary-red);
+}
+
