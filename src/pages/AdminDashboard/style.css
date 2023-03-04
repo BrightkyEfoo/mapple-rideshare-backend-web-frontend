@@ -1,0 +1,7 @@
+.dashboard-super-container{
+    width: 100%;
+    display: flex;
+    position: relative;
+    height: max-content;
+    margin: 45px 0;
+}

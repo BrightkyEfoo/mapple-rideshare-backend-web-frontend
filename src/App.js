@@ -4,6 +4,8 @@ import HomePage from './pages/HomePage/HomePage';
 import { useSelector } from 'react-redux';
 import RiderLoginFormContainer from './Components/RiderLoginForm/RiderLoginFormContainer';
 import Dashboard from './pages/Dashboard/Dashboard';
+import AdminLogin from './pages/AdminLogin/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 
 function App() {
   const isVisibleRiderLoginForm = useSelector(
@@ -20,6 +22,10 @@ function App() {
           <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} /> */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/maple-ride-admin" element={<AdminLogin />} />
+          <Route path="/maple-ride-admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/maple-ride-subadmin" element={<AdminLogin />} />
+          <Route path="/maple-ride-subadmin/dashboard" element={<AdminDashboard />} />
         </Routes>
       </Router>
     </div>

@@ -35,8 +35,23 @@ const NavBar = () => {
     if (user && user.id) {
       navigate('/dashboard');
     } else {
+      dispatch(RiderLoginFormActions.setType('rider'));
       dispatch(RiderLoginFormActions.setIsVisible(true));
     }
+  };
+  const handleClick2 = e => {
+    if (user && user.id) {
+      navigate('/dashboard');
+    } else {
+      dispatch(RiderLoginFormActions.setType('driver'));
+      dispatch(RiderLoginFormActions.setIsVisible(true));
+    }
+  };
+
+  const handleClick3 = e => {
+    if (user && user.id) {
+      navigate(user.accessLevel === 3 ? '/maple-ride-admin/dashboard' : '/maple-ride-subadmin/dashboard');
+    } 
   };
   return data ? (
     <div className="navbar-container">
@@ -51,17 +66,40 @@ const NavBar = () => {
             </div>
           );
         })}
-        <button className={user && user.id ? " filled df" : 'filled'} onClick={handleClick1}>
-          {user && user.id ? (
-            <>
-              <img src={user.profilePic} alt={user.lastName} />
-              <p>{user.lastName + ' ' + user.firstName}</p>
-            </>
-          ) : (
-            data.content.buttons[0].name
-          )}
-        </button>
-        <button className="empty">{data.content.buttons[1].name}</button>
+        {(user?.accessLevel <= 1 || !user)&& (
+          <>
+            {!(user && user.id && user.accessLevel === 1) && (
+              <button className={user && user.id && user.accessLevel === 0 ? ' filled df' : 'filled'} onClick={handleClick1}>
+                {user && user.id && user.accessLevel === 0 ? (
+                  <>
+                    <img src={user.profilePic} alt={user.lastName} />
+                    <p>{user.lastName + ' ' + user.firstName}</p>
+                  </>
+                ) : (
+                  data.content.buttons[0].name
+                )}
+              </button>
+            )}
+            {!(user && user.id && user.accessLevel === 0) && (
+              <button className={user && user.id && user.accessLevel === 1 ? ' empty df' : 'empty'} /*onClick={handleClick2}*/>
+                {user && user.id && user.accessLevel === 1 ? (
+                  <>
+                    <img src={user.profilePic} alt={user.lastName} />
+                    <p>{user.lastName + ' ' + user.firstName}</p>
+                  </>
+                ) : (
+                  data.content.buttons[1].name
+                )}
+              </button>
+            )}
+          </>
+        )}
+        {user && user.accessLevel > 1 && (
+          <button className="filled df" onClick={handleClick3}>
+            <img src={user.profilePic} alt={user.lastName} />
+            <p>{user.lastName + ' ' + user.firstName}</p>
+          </button>
+        )}
       </div>
     </div>
   ) : null;

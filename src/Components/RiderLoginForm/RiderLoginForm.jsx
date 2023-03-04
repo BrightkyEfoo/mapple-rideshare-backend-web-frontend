@@ -41,17 +41,18 @@ const RiderLoginForm = () => {
   });
   const isVisible = useSelector(state => state.RiderLoginForm.isVisible);
   const position = useSelector(state => state.RiderLoginForm.position);
+  const type = useSelector(state => state.RiderLoginForm.type);
   //   const location = useLocation();
   useEffect(() => {
     axios
-      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=riderloginform&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=${type}loginform&language=EN`)
       .then(res => {
         setData(res.data.view);
       })
       .catch(err => {
         console.log('err', err);
       });
-  }, []);
+  }, [type]);
 
   const handleChangeByName = e => {
     setForm(prev => {
@@ -76,25 +77,25 @@ const RiderLoginForm = () => {
       form.acceptTerms
     ) {
       axios
-        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user', form)
+        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user', { ...form, accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);
+          dispatch(RiderLoginFormActions.goForward());
           // localStorage.setItem('user', JSON.stringify(res.data.user))
         })
         .catch(err => {
           console.log('err', err);
         });
-      dispatch(RiderLoginFormActions.goForward());
     }
   };
   const handleSubmit2 = e => {
-    const token = 'Bearer '+localStorage.getItem('token')
+    const token = 'Bearer ' + localStorage.getItem('token');
     axios
-      .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/verify-email', form , {
-        headers : {
-          Authorization : token
-        }
+      .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/verify-email', {...form }, {
+        headers: {
+          Authorization: token,
+        },
       })
       .then(res => {
         console.log('res.data', res.data);
@@ -108,22 +109,22 @@ const RiderLoginForm = () => {
         console.log('err', err);
       });
   };
-  const [digitsString , setDigitsString]=useState('')
+  const [digitsString, setDigitsString] = useState('');
   const handleDigitsChange = value => {
     setForm(prev => {
       prev.code = value.asNumber;
       return { ...prev };
     });
-    setDigitsString(value.asString)
+    setDigitsString(value.asString);
   };
 
-  const handleLogin1 = abc => {
+  const handleLogin1 = () => {
     if (validateEmail(form.email) && form.password.length >= 8) {
       axios
-        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password })
+        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password , accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
-          localStorage.setItem('token' , res.data.token)
+          localStorage.setItem('token', res.data.token);
           dispatch(RiderLoginFormActions.goForward());
         })
         .catch(err => {
