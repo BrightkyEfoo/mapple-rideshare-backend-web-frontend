@@ -6,26 +6,30 @@ import RiderLoginFormContainer from './Components/RiderLoginForm/RiderLoginFormC
 import Dashboard from './pages/Dashboard/Dashboard';
 import AdminLogin from './pages/AdminLogin/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
+import UserCreateForm from './Components/UserCreateForm/UserCreateForm';
+import BookRide from './pages/BookRide/BookRide';
+import AboutPage from './pages/About/AboutPage';
 
 function App() {
   const isVisibleRiderLoginForm = useSelector(
     state => state.RiderLoginForm.isVisible
   );
+  const isVisibleUserCreateOrEdit = useSelector(state => state.UserCreateOrEdit.isVisible)
   return (
     <div className="App">
       <Router>
         {isVisibleRiderLoginForm && <RiderLoginFormContainer />}
+        {isVisibleUserCreateOrEdit && <UserCreateForm />}
         <Routes>
           <Route path="/" element={<HomePage />} />
           {/* <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:eventId" element={<SingleEventPage />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<AboutPage />} />
         <Route path="/login" element={<Login />} /> */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/maple-ride-admin" element={<AdminLogin />} />
           <Route path="/maple-ride-admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/maple-ride-subadmin" element={<AdminLogin />} />
-          <Route path="/maple-ride-subadmin/dashboard" element={<AdminDashboard />} />
+          <Route path="/book-ride" element={<BookRide />} />
         </Routes>
       </Router>
     </div>

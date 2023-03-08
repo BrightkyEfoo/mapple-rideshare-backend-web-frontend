@@ -1,0 +1,41 @@
+.error-401-page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+    flex-direction: column;
+}
+.error-401-page > p:first-child{
+    font-size: 300px;
+    line-height: 240px;
+    color: var(--primary-red);
+    font-weight: bolder;
+}
+
+.error-401-page > p:first-child > span{
+    position: relative;
+    /* top: -40px; */
+
+}
+
+.error-401-page > p:nth-child(2){
+    font-size: 50px;
+    margin-bottom: 50px;
+}
+
+.error-401-page > button{
+    font-size: 25px;
+    padding: 15px 50px;
+    background-color: white;
+    color: var(--primary-red);
+    border-radius: 10px;
+    border: 1px var(--primary-red) solid;
+    font-weight: bold;
+    transition: all ease 300ms;
+}
+
+.error-401-page > button:hover{
+    background-color: var(--primary-red);
+    color: white;
+    cursor: pointer;
+}

@@ -8,7 +8,8 @@ import './style.css';
 import { DigitInputs, Digit } from 'digitinputs-react';
 import 'digitinputs-react/dist/index.css';
 import { RiderLoginFormActions } from '../../rtk/features/RiderLoginFormSlice';
-import cities from 'cities.json';
+// import cities from 'cities.json';
+import { cities } from '../../helpers/cities';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import { validateEmail, validateName } from '../../helpers';
@@ -92,11 +93,15 @@ const RiderLoginForm = () => {
   const handleSubmit2 = e => {
     const token = 'Bearer ' + localStorage.getItem('token');
     axios
-      .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/verify-email', {...form }, {
-        headers: {
-          Authorization: token,
-        },
-      })
+      .post(
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/verify-email',
+        { ...form },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
       .then(res => {
         console.log('res.data', res.data);
         localStorage.setItem('token', res.data.token);
@@ -121,7 +126,7 @@ const RiderLoginForm = () => {
   const handleLogin1 = () => {
     if (validateEmail(form.email) && form.password.length >= 8) {
       axios
-        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password , accessLevel: type === 'driver' ? 1 : 0 })
+        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password, accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);
@@ -187,8 +192,8 @@ const RiderLoginForm = () => {
                               .filter(city => city.country === form.country)
                               .map((city, j) => {
                                 return (
-                                  <option value={city.name} key={`city-${i}-${j}`}>
-                                    {city.name}
+                                  <option value={city.city} key={`city-${i}-${j}`}>
+                                    {city.city}
                                   </option>
                                 );
                               })}
@@ -200,6 +205,7 @@ const RiderLoginForm = () => {
                   return (
                     <div key={i}>
                       <PhoneInput
+                        countries={['CA', 'US']}
                         defaultCountry="CA"
                         placeholder="Enter phone number"
                         name="phone"
@@ -396,9 +402,7 @@ const RiderLoginForm = () => {
         {loginError.isError && <div className="error-alert">{loginError.msg}</div>}
       </div>
     )
-  ) : (
-    <div>Loading</div>
-  );
+  ) : null;
 };
 
 export default RiderLoginForm;

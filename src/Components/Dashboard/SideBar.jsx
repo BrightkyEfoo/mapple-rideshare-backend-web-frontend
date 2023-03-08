@@ -14,6 +14,7 @@ import { NavBarActions } from '../../rtk/features/NavBarSlice';
 const SideBar = () => {
   const dispatch = useDispatch();
   const NavBarState = useSelector(state => state.NavBar);
+  const User = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
   const handleLogOut = e => {
     navigate('/');
@@ -22,61 +23,65 @@ const SideBar = () => {
   };
   return (
     <div className="dashboard-side-bar">
-    <div className="dashboard-side-bar-title-container">
-      <AiOutlineDashboard size={20} />
-      <p>Dashboard</p>
-    </div>
-    <div
-      className={NavBarState.selected === 1 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
-      onClick={e => dispatch(NavBarActions.setSelected(1))}
-    >
-      <FaShoppingCart size={20} />
-      <p>Order History</p>
-      {NavBarState.selected === 1 && <div className="dashboard-side-bar-triangle"></div>}
-    </div>
-    <div
-      className="dashboard-side-bar-button-container disabled"
-      // onClick={e => dispatch(NavBarActions.setSelected(1))}
-    >
-      <BsGraphUp size={20} />
-      <p>Booking</p>
-      {NavBarState.selected === 2 && <div className="dashboard-side-bar-triangle"></div>}
-    </div>
-
-    <div
-      className={NavBarState.selected === 2 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
-      onClick={e => console.log('first', { element: e.target })}
-    >
-      <GiMoneyStack size={20} />
-      <p>Payment</p>
-      {NavBarState.selected === 8 && <div className="dashboard-side-bar-triangle"></div>}
-    </div>
-    <div
-      className={NavBarState.selected === 4 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
-      onClick={e => dispatch(NavBarActions.setSelected(4))}
-    >
-      <IoMdSettings size={20} />
-      <p>Settings</p>
-      <MdKeyboardArrowRight />
-      {NavBarState.selected === 4 && <div className="dashboard-side-bar-triangle"></div>}
-    </div>
-    <div className="dashboard-side-bar-button-bottom-container">
-      <div className="dashboard-side-bar-button-bottom-icon" onClick={handleLogOut}>
-        <HiOutlineLogout size={20} />
+      <div className="dashboard-side-bar-title-container">
+        <AiOutlineDashboard size={20} />
+        <p>Dashboard</p>
       </div>
       <div
-        className={
-          NavBarState.selected === 6 ? 'dashboard-side-bar-button-bottom-icon selected' : 'dashboard-side-bar-button-bottom-icon'
-        }
-        onClick={e => dispatch(NavBarActions.setSelected(6))}
+        className={NavBarState.selected === 1 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
+        onClick={e => dispatch(NavBarActions.setSelected(1))}
       >
-        <BsFillPersonFill size={20} />
+        <FaShoppingCart size={20} />
+        <p>Order History</p>
+        {NavBarState.selected === 1 && <div className="dashboard-side-bar-triangle"></div>}
       </div>
-      <div className="dashboard-side-bar-button-bottom-icon">
-        <AiOutlinePoweroff size={20} />
+      <div
+        className={`dashboard-side-bar-button-container ${User.allowed ? 'enabled' : 'disabled'}`}
+        onClick={e => {
+          if (User.allowed) {
+            navigate('/book-ride');
+          }
+        }}
+      >
+        <BsGraphUp size={20} />
+        <p>Book Ride</p>
+        {NavBarState.selected === 2 && <div className="dashboard-side-bar-triangle"></div>}
+      </div>
+
+      <div
+        className={NavBarState.selected === 2 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
+        onClick={e => console.log('first', { element: e.target })}
+      >
+        <GiMoneyStack size={20} />
+        <p>Payment</p>
+        {NavBarState.selected === 8 && <div className="dashboard-side-bar-triangle"></div>}
+      </div>
+      <div
+        className={NavBarState.selected === 4 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
+        onClick={e => dispatch(NavBarActions.setSelected(4))}
+      >
+        <IoMdSettings size={20} />
+        <p>Settings</p>
+        <MdKeyboardArrowRight />
+        {NavBarState.selected === 4 && <div className="dashboard-side-bar-triangle"></div>}
+      </div>
+      <div className="dashboard-side-bar-button-bottom-container">
+        <div className="dashboard-side-bar-button-bottom-icon" onClick={handleLogOut}>
+          <HiOutlineLogout size={20} />
+        </div>
+        <div
+          className={
+            NavBarState.selected === 6 ? 'dashboard-side-bar-button-bottom-icon selected' : 'dashboard-side-bar-button-bottom-icon'
+          }
+          onClick={e => dispatch(NavBarActions.setSelected(6))}
+        >
+          <BsFillPersonFill size={20} />
+        </div>
+        <div className="dashboard-side-bar-button-bottom-icon">
+          <AiOutlinePoweroff size={20} />
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 

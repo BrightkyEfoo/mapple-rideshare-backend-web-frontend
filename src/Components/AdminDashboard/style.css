@@ -7,7 +7,7 @@
   gap: 15px;
   padding: 8px 15px;
   transition: background-color ease 300ms;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .dashboard-side-bar-title-container {
@@ -86,7 +86,7 @@
   align-items: center;
   justify-content: center;
   transition: background-color ease 300ms;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .dashboard-side-bar-button-bottom-icon:hover {
@@ -230,4 +230,21 @@ button.disabled {
   opacity: 0.7;
   border: none;
   cursor: not-allowed !important;
+}
+
+
+.dashboard-admin-settings-view{
+  padding-left: 25px;
+}
+
+.dashboard-admin-settings-view > button {
+  background-color: gray;
+  height: 40px;
+  width: 150px;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin: 15px;
 }

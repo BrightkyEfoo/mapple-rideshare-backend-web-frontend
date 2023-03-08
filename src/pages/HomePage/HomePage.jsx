@@ -32,7 +32,7 @@ const HomePage = () => {
         <Section4 data={data.content.section4} />
         <Footer />
     </div>
-  ) : <div>Loading</div>
+  ) : null
 }
 
 export default HomePage

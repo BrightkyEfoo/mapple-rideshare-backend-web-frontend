@@ -50,7 +50,7 @@ const NavBar = () => {
 
   const handleClick3 = e => {
     if (user && user.id) {
-      navigate(user.accessLevel === 3 ? '/maple-ride-admin/dashboard' : '/maple-ride-subadmin/dashboard');
+      navigate('/maple-ride-admin/dashboard');
     } 
   };
   return data ? (

@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import cities from 'cities.json';
+// import cities from 'cities.json';
+import { cities } from '../../helpers/cities';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
+import en from 'react-phone-number-input/locale/en';
+
 import axios from 'axios';
 import './userDetails.css';
 import { BiImageAdd } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
+import { CountrySelect } from '../CountrySelect';
 const AdminDetailsView = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
@@ -126,6 +130,9 @@ const AdminDetailsView = () => {
       }
     }
   };
+
+  const [country, setCountry] = useState('US');
+
   return (
     <div className="user-details-edit">
       <p>Edit Account Details</p>
@@ -158,7 +165,9 @@ const AdminDetailsView = () => {
 
         <div>
           <p>phone</p>
+
           <PhoneInput
+            countries={['CA', 'US']}
             defaultCountry="CA"
             placeholder="Enter phone number"
             name="phone"
@@ -196,8 +205,8 @@ const AdminDetailsView = () => {
               .filter(city => city.country === form.country)
               .map((city, j) => {
                 return (
-                  <option value={city.name} key={`city-${j}`} selected={form.city === city.name}>
-                    {city.name}
+                  <option value={city.city} key={`city-${j}`} selected={form.city === city.city}>
+                    {city.city}
                   </option>
                 );
               })}
@@ -233,7 +242,7 @@ const AdminDetailsView = () => {
         <div>
           <div>
             <p>re-type your password</p>
-            {form.password !== form.rePassword && <p className='err-message'>no matching</p>}
+            {form.password !== form.rePassword && <p className="err-message">no matching</p>}
           </div>
           <input
             type="password"

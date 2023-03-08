@@ -1,0 +1,9 @@
+.navbar-container-2{
+    display: flex;
+    justify-content: space-between;
+    padding: var(--primary-padding);
+}
+
+/* .navbar-container-2 > img{
+    height: ;
+} */

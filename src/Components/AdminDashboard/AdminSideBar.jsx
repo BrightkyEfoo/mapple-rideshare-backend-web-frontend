@@ -35,7 +35,7 @@ const AdminSideBar = () => {
         {NavBarState.selected === 1 && <div className="dashboard-side-bar-triangle"></div>}
       </div>
       <div
-        className="dashboard-side-bar-button-container disabled"
+        className="dashboard-side-bar-button-container"
         // onClick={e => dispatch(NavBarActions.setSelected(1))}
       >
         <BsGraphUp size={20} />
