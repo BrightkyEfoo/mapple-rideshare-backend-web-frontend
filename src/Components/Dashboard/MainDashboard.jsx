@@ -15,7 +15,7 @@ const MainDashboard = () => {
     case 6:
       return <UserDetailsView />;
     default:
-      return <div>Chose something</div>;
+      return  <OrderHistoryView />;
   }
 }
 

@@ -10,16 +10,21 @@ import { GiMoneyStack } from 'react-icons/gi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { NavBarActions } from '../../rtk/features/NavBarSlice';
+import { RiderLoginFormActions } from '../../rtk/features/RiderLoginFormSlice';
 
 const SideBar = () => {
   const dispatch = useDispatch();
   const NavBarState = useSelector(state => state.NavBar);
   const User = JSON.parse(localStorage.getItem('user'));
+  const [hovered, setHovered] = useState(null);
   const navigate = useNavigate();
   const handleLogOut = e => {
     navigate('/');
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    setTimeout(() => {
+      dispatch(RiderLoginFormActions.setIsVisible(true));
+    }, 250);
   };
   return (
     <div className="dashboard-side-bar">
@@ -66,19 +71,38 @@ const SideBar = () => {
         {NavBarState.selected === 4 && <div className="dashboard-side-bar-triangle"></div>}
       </div>
       <div className="dashboard-side-bar-button-bottom-container">
-        <div className="dashboard-side-bar-button-bottom-icon" onClick={handleLogOut}>
+        <div className="dashboard-side-bar-button-bottom-icon" onClick={e => {
+            navigate('/');
+          }}
+          onMouseEnter={() => setHovered(0)} onMouseLeave={() => setHovered(null)}>
           <HiOutlineLogout size={20} />
+          {hovered === 0 && (
+            <div >
+              <p>home page</p>
+            </div>
+          )}
         </div>
         <div
           className={
             NavBarState.selected === 6 ? 'dashboard-side-bar-button-bottom-icon selected' : 'dashboard-side-bar-button-bottom-icon'
           }
           onClick={e => dispatch(NavBarActions.setSelected(6))}
+          onMouseEnter={() => setHovered(1)} onMouseLeave={() => setHovered(null)}
         >
           <BsFillPersonFill size={20} />
+          {hovered === 1 && (
+            <div >
+              <p>edit profile</p>
+            </div>
+          )}
         </div>
-        <div className="dashboard-side-bar-button-bottom-icon">
+        <div className="dashboard-side-bar-button-bottom-icon" onClick={handleLogOut} onMouseEnter={() => setHovered(2)} onMouseLeave={() => setHovered(null)}>
           <AiOutlinePoweroff size={20} />
+          {hovered === 2 && (
+            <div >
+              <p>log out</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

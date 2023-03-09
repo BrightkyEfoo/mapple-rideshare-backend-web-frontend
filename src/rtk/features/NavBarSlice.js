@@ -2,7 +2,7 @@ import {createSlice} from "@reduxjs/toolkit"
 const initialState = {
     isLogin : false,
     isLogged : false,
-    selected : 0
+    selected : 1
 }
 
 const NavBarSlice = createSlice({

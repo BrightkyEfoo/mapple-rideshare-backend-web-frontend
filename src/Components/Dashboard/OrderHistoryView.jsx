@@ -58,6 +58,15 @@ const OrderHistoryView = () => {
         return <div>{params.row.price}</div>;
       },
     },
+    {
+      field: 'date',
+      headerName: 'date',
+      width: 200,
+      renderCell: params => {
+        let date = new Date(params.row.updatedAt);
+        return <div>{date.toLocaleString()}</div>;
+      },
+    },
   ];
 
   return (

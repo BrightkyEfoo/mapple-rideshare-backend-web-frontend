@@ -36,7 +36,7 @@
   transform: rotate(-45deg);
   position: absolute;
   right: -18px;
-  top : 20%;
+  top: 20%;
 }
 
 .dashboard-side-bar-button-container:hover {
@@ -49,12 +49,11 @@
 
 .dashboard-side-bar-button-container.disabled {
   cursor: not-allowed;
-  
+
   /* background-color: rgb(114, 44, 58) !important; */
 }
 
-
-.dashboard-side-bar-button-bottom-icon.selected{
+.dashboard-side-bar-button-bottom-icon.selected {
   background-color: rgb(89, 2, 20) !important;
 }
 
@@ -86,6 +85,7 @@
   align-items: center;
   justify-content: center;
   transition: background-color ease 300ms;
+  position: relative;
   /* cursor: pointer; */
 }
 
@@ -232,8 +232,7 @@ button.disabled {
   cursor: not-allowed !important;
 }
 
-
-.dashboard-admin-settings-view{
+.dashboard-admin-settings-view {
   padding-left: 25px;
 }
 
@@ -247,4 +246,48 @@ button.disabled {
   cursor: pointer;
   border: none;
   margin: 15px;
+}
+
+.admin-order-hitory-container > button:last-child {
+  background-color: gray;
+  height: 40px;
+  width: 150px;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin: 15px;
+}
+.dashboard-side-bar-button-bottom-icon > div {
+  position: absolute;
+  color: white;
+  background-color: rgb(0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  font-size: 14px;
+  bottom: -45px;
+  border-radius: 15px;
+}
+
+.dashboard-side-bar-button-bottom-icon > div > p {
+  position: relative;
+  width: 80px;
+  text-align: center;
+}
+.dashboard-side-bar-button-bottom-icon > div > p::before {
+  content: '';
+  height: 0;
+  width: 0;
+  border: none;
+  border-top: 25px solid rgb(0, 0, 0);
+  border-right: 25px solid rgba(0, 0, 0, 0);
+  border-bottom: 25px solid rgba(0, 0, 0, 0);
+  transform: rotate(45deg);
+  position: absolute;
+  /* z-index: -1; */
+  left: 18px;
+  top: -25px;
 }

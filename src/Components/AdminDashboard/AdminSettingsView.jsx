@@ -40,7 +40,7 @@ const AdminSettingsView = () => {
     {
       field: 'actions',
       headerName: 'actions',
-      width: 170,
+      width: 250,
       renderCell: params => {
         return (
           <div className="admin-settings-view-actions-buttons">
@@ -80,7 +80,7 @@ const AdminSettingsView = () => {
                 </button>
               </>
             )}
-            <button
+            <div
               onClick={e => {
                 axios
                   .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/subadmin', { allowed: !params.row.allowed , userId : User.id , id:parseInt(params.row.id)} , {
@@ -100,11 +100,13 @@ const AdminSettingsView = () => {
             >
               {/*il y a un truc a faire ici*/}
               {params.row.allowed ? (
-                <AiFillLock title={'lock the user ' + params.row.userName} size={20} color="#3b3b3b" />
+                // <AiFillLock title={'lock the user ' + params.row.userName} size={20} color="#3b3b3b" />
+                <p title={'lock the user ' + params.row.userName}>desactivate</p>
               ) : (
-                <AiFillUnlock title={'unlock the user ' + params.row.userName} size={20} color="#3b3b3b" />
+                // <AiFillUnlock title={'unlock the user ' + params.row.userName} size={20} color="#3b3b3b" />
+                <p title={'unlock the user ' + params.row.userName} >activate</p>
               )}
-            </button>
+            </div>
           </div>
         );
       },
