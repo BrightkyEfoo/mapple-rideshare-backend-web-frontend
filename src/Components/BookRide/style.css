@@ -1,3 +1,10 @@
+button.success{
+  background-color: var(--primary-red) !important;
+  cursor: pointer;
+  color: white !important;
+}
+
+
 .book-ride-part-1-container > p:first-child {
   font-size: 18px;
   font-weight: bold;

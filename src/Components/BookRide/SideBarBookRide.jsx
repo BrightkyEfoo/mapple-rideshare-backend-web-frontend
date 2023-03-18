@@ -181,7 +181,7 @@ const SideBarBookRide = ({ data }) => {
               );
             })}
           </div>
-          <button onClick={handleClick1}>{data.part1.button.value}</button>
+          <button className={bookRide.route.start && bookRide.route.end ? 'success' : 'simple'} onClick={handleClick1}>{data.part1.button.value}</button>
         </div>
       )}
       {bookRidePosition === 1 && (

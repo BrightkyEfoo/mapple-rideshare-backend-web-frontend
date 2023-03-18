@@ -33,7 +33,7 @@ function App() {
     state => state.Notification.isVisible
   );
   const isSmallRateVisible = useSelector(
-    state => state.Notification.isRateVisible
+    state => state.Notification.Rate.isVisible
   );
   const dispatch = useDispatch();
 
@@ -72,44 +72,23 @@ function App() {
         )
       );
       dispatch(NotificationActions.setNotifications(data.notifications));
+      dispatch(NotificationActions.setData(data));
       dispatch(
         NotificationActions.setActions([
           {
             id: 1,
             content: 'Yes',
-            handle: () => {
-              axios
-                .post(
-                  'http://localhost:9001/map/booking/confirm',
-                  {
-                    userId: user.id,
-                    bookingId: data.booking.id,
-                  },
-                  {
-                    headers: {
-                      Authorization: token,
-                    },
-                  }
-                )
-                .then(res => {
-                  dispatch(NotificationActions.setIsRateVisible(true))
-                  console.log('res.data', res.data);
-                })
-                .catch(err => {
-                  console.log('err', err);
-                });
-            },
           },
           {
             id: 2,
             content: 'No',
-            handle: () => {
-              dispatch(NotificationActions.setIsVisible(false));
-            },
           },
         ])
       );
     } else if (data.state === 3) {
+      // dispatch(NotificationActions.setOnClose(()=>{
+      //   dispatch(NotificationActions.setRate(true))
+      // }))
       dispatch(NotificationActions.setContent('Your ride is at end'));
     }
     dispatch(NotificationActions.setIsVisible(true));

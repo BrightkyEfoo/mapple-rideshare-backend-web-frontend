@@ -12,6 +12,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../CheckOutForm/CheckoutForm';
 import StripeCheckout from 'react-stripe-checkout';
+import { socket } from '../../Socket';
+import { FaCheckCircle } from 'react-icons/fa';
 
 const stripePromise = loadStripe(
   'pk_test_51MjU5YLDZa2YdiZt2YgpXKsjkAdZD92w1SuZnb3JGPfCMDanOZexRYuZwwNDRrK6Y3bk9ZbIV1GNqa7OnqfA1iBZ00RVMiDjiZ'
@@ -24,28 +26,31 @@ const SmallPayment = () => {
   const bookRide = useSelector(state => state.BookRide);
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState('');
-  // const [options, setOptions] = useState(null);
-  const options = {
-    // passing the client secret obtained in step 3
-    clientSecret: clientSecret,
-    // Fully customizable with appearance API.
-    appearance: {
-      /*...*/
-    },
-  };
+  const [notificationData, setNotificationData] = useState({ msg: '', status: '' });
+
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const [form, setForm] = useState({
     seletcted: '',
+  });
+
+  socket.on('success-payment', data => {
+    console.log('data success-payment', data)
+    setIsNotificationVisible(true)
+    setNotificationData({
+      msg: data.msg,
+      status: data.status,
+    });
   });
   const handleChange1 = e => {
     setForm({ ...form, seletcted: e.target.name });
     setPosition(2);
   };
-  useEffect(() => {
-    axios.get('http://localhost:9001/secret').then(res => {
-      console.log('client_secret ', res.data);
-      setClientSecret(res.data.client_secret);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get('http://localhost:9001/secret').then(res => {
+  //     console.log('client_secret ', res.data);
+  //     setClientSecret(res.data.client_secret);
+  //   });
+  // }, []);
 
   const handlePay = e => {
     // axios
@@ -71,18 +76,18 @@ const SmallPayment = () => {
     //   .catch(err => {
     //     console.log('err', err);
     //   });
-    axios.get('http://localhost:9001/secret').then(res => {
-      console.log('client_secret ', res.data);
-      setClientSecret(res.data.client_secret);
-      // setOptions({
-      //   // passing the client secret obtained in step 3
-      //   clientSecret: clientSecret,
-      //   // Fully customizable with appearance API.
-      //   appearance: {
-      //     /*...*/
-      //   },
-      // });
-    });
+    // axios.get('http://localhost:9001/secret').then(res => {
+    //   console.log('client_secret ', res.data);
+    //   setClientSecret(res.data.client_secret);
+    // setOptions({
+    //   // passing the client secret obtained in step 3
+    //   clientSecret: clientSecret,
+    //   // Fully customizable with appearance API.
+    //   appearance: {
+    //     /*...*/
+    //   },
+    // });
+    // });
   };
   const paynow = token => {
     try {
@@ -107,6 +112,15 @@ const SmallPayment = () => {
         }
       }}
     >
+      {isNotificationVisible && (
+        <div className="payment-notification-success">
+          {notificationData.msg}
+          <FaCheckCircle color="green" size={30} />
+          <button onClick={()=>{
+            navigate('/dashboard')
+          }}>Close</button>
+        </div>
+      )}
       {position === 1 && (
         <div className="small-payment-popup-container-1">
           <div>
@@ -137,7 +151,7 @@ const SmallPayment = () => {
                 Visa / Mastercard / AMEX
               </button>
             </StripeCheckout> */}
-            <button name="CC" onClick={handleChange1}>
+            <button name="CC" onClick={handleChange1} className='success'>
               Visa / Mastercard / AMEX
             </button>
             <button name="PayPal" /*onClick={handleChange1}*/>PayPal</button>

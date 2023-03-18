@@ -3,8 +3,13 @@ const initialState = {
   content: '',
   isVisible: false,
   actions: null,
+  onClose: null,
   notifications: null,
-  isRateVisible : false
+  data: null,
+  Rate: {
+    isVisible: false,
+    bookingId: null,
+  },
 };
 
 const NotificationSlice = createSlice({
@@ -17,10 +22,17 @@ const NotificationSlice = createSlice({
     setIsVisible: (state, data) => {
       state.isVisible = data.payload;
     },
-    setIsRateVisible: (state, data) => {
-      state.isRateVisible = data.payload;
+    setRate: (state, data) => {
+      state.Rate = data.payload;
+    },
+    setData: (state, data) => {
+      state.data = data.payload;
     },
     setActions: (state, data) => {
+      state.actions = data.payload;
+    },
+
+    setOnClose: (state, data) => {
       state.actions = data.payload;
     },
     clear: state => {

@@ -7,6 +7,7 @@ import './style.css';
 import { GrOverview } from 'react-icons/gr';
 import { useMediaQuery } from 'react-responsive';
 import { socket } from '../../Socket';
+import { NavBarActions } from '../../rtk/features/NavBarSlice';
 
 const OrderHistoryView = () => {
   const token = 'Bearer ' + localStorage.getItem('token');
@@ -14,20 +15,22 @@ const OrderHistoryView = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
   const isTablet = useMediaQuery({ query: '(max-width: 920px)' });
   const isSmallTablet = useMediaQuery({ query: '(max-width: 730px)' });
+  const reload = useSelector(state => state.NavBar.relaod)
   const dispatch = useDispatch();
   const history = useSelector(state => state.BookRide.history);
 
-  const [reload, setReload] = useState(true);
+  // const [reload, setReload] = useState(true);
   socket.on('validated', data => {
-    setReload(!reload);
+    dispatch(NavBarActions.reload())
+    
     console.log('data', data);
   });
   socket.on('started', data => {
-    setReload(!reload);
+    dispatch(NavBarActions.reload())
     console.log('data', data);
   });
   socket.on('confirmed', data => {
-    setReload(!reload);
+    dispatch(NavBarActions.reload())
     console.log('data', data);
   });
   //   const [history, setHistory] = useState(null);
@@ -132,6 +135,7 @@ const OrderHistoryView = () => {
               params.row.driverConfirm && (
                 <div>
                   <button
+                  className='btn-primary-success'
                     onClick={() => {
                       axios
                         .post(
@@ -147,7 +151,7 @@ const OrderHistoryView = () => {
                           }
                         )
                         .then(res => {
-                          setReload(!reload);
+                          dispatch(NavBarActions.reload())
                           console.log('res.data', res.data);
                         })
                         .catch(err => {
@@ -157,7 +161,7 @@ const OrderHistoryView = () => {
                   >
                     Yes
                   </button>
-                  <button>No</button>
+                  <button className='btn-primary-error'>No</button>
                 </div>
               )
             );
