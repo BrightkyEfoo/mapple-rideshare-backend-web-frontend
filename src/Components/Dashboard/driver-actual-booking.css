@@ -1,0 +1,48 @@
+.driver-actual-booking > div:first-child > img {
+  height: 200px;
+  width: 250px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.driver-actual-booking .btn-success {
+  background-color: var(--primary-red);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 25px;
+}
+
+.driver-actual-booking .btn-error {
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 25px;
+}
+
+.driver-actual-booking {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  padding: 15px;
+  width: 100%;
+}
+.driver-actual-booking .map {
+  height: 300px;
+  width: auto;
+}
+
+.driver-actual-booking > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.driver-actual-booking > div:first-child > div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

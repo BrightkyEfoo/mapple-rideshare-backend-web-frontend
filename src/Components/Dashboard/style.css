@@ -115,7 +115,7 @@
   align-items: center;
 }
 
-.user-details-view-container input[type='file']{
+.user-details-view-container input[type='file'] {
   display: none;
 }
 
@@ -127,11 +127,10 @@
   padding-left: 15px;
 }
 
-.user-details-view-container .error-message{
+.user-details-view-container .error-message {
   color: red;
   font-size: 0.9rem;
   font-style: italic;
-
 }
 
 .user-details-view-container > p:nth-child(2) {
@@ -141,7 +140,7 @@
   font-weight: 600;
 }
 
-.user-details-view-container > div:nth-child(1)>img{
+.user-details-view-container > div:nth-child(1) > img {
   height: 100px;
   object-fit: contain;
 }
@@ -184,16 +183,75 @@
 }
 
 button.enabled {
-  cursor : pointer;
+  cursor: pointer;
 }
 
-button.disabled{
+button.disabled {
   background-color: rgb(20, 37, 20);
   opacity: 0.7;
   border: none;
   cursor: not-allowed !important;
 }
 
-.order-history-ride{
+.order-history-ride {
   padding-left: 16px;
+}
+
+.dashboard-mobile-side-bar {
+  background-color: var(--primary-red);
+  padding: 15px;
+  position: relative;
+}
+.dashboard-mobile-side-bar > :first-child > button {
+  aspect-ratio: 1/1;
+  display: flex;
+  padding: 5px;
+  background: var(--primary-red);
+  color: white;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid white;
+  border-radius: 3px;
+}
+
+.mobile-dashboard-side-bar-title-container{
+  color: white;
+  margin: 5px auto;
+}
+
+.mobile-dashboard-side-bar-title-container > p{
+
+  font-size: 25px !important;
+  font-weight: bold;
+}
+
+.dashboard-mobile-side-bar > :first-child {
+  display: flex;
+  align-items: center;
+  /* gap: 100px; */
+  /* justify-content: space-between; */
+}
+
+@media only screen and (max-width: 912px) and (min-width: 601px) {
+  .dashboard-side-bar {
+    width: fit-content !important;
+  }
+  .order-history-ride {
+    padding-right: 16px;
+    font-size: 0.7rem !important;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .dashboard-mobile-side-bar .dashboard-side-bar {
+    width: 100vw !important;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1000;
+  }
+  .order-history-ride {
+    padding-right: 16px;
+    font-size: 0.7rem !important;
+  }
 }

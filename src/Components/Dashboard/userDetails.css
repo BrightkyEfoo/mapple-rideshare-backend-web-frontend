@@ -24,10 +24,9 @@
   cursor: pointer;
 }
 
-.user-details-edit > input[type='file']{
-    display: none;
+.user-details-edit > input[type='file'] {
+  display: none;
 }
-
 
 .user-details-edit input[type='text'],
 .user-details-edit input[type='password'],
@@ -56,24 +55,31 @@
   outline: none;
 }
 
-.user-details-edit > div:nth-child(2) > div:nth-child(9) {
-  display: flex;
-  align-items: center;
-  /* justify-content: center; */
-  padding-left: 35px;
-  gap: 20px;
-}
-
 .user-details-edit > div:nth-child(2) > div:nth-child(10) {
-  grid-column: 1 / 3;
+  grid-column: 2 / 3;
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(9) {
   /* grid-column: 1 / 3; */
+  grid-area: 4/2/5/3;
+}
+
+.inputs-block-sex {
+  display: flex;
+  grid-area: 6/2/7/3;
+  gap: 15px;
+}
+.inputs-block-sex + div {
+  grid-area: 6/3/7/4;
+}
+.inputs-block-sex > div {
+  display: flex;
+  align-items: center;
+  gap: 7.5px;
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(8) {
-  grid-area: 4/2/5/4;
+  grid-area: 4/3/5/4;
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(9) > div {
@@ -83,13 +89,13 @@
 }
 
 .user-details-edit > div:nth-child(2) > :last-child {
-  grid-area: 6 /3 /7/4;
+  grid-area: 7/3/8/4;
   font-size: 20px;
   color: white;
   font-weight: bold;
   background-color: var(--primary-red);
   border-radius: 30px;
-  border : none
+  border: none;
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(11) > div {
@@ -104,3 +110,56 @@
   color: var(--primary-red);
 }
 
+@media only screen and (max-width: 912px) {
+  p,
+  input,
+  button,
+  select {
+    font-size: 0.7rem;
+  }
+  .user-details-edit > p:first-child {
+    font-size: 1rem !important;
+  }
+  .user-details-edit {
+    padding: 0 15px !important;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .user-details-edit > div:nth-child(2) {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .user-details-edit > div:nth-child(2) > * {
+    grid-area: auto !important;
+  }
+  .user-details-edit > div:nth-child(2) img.profilepic {
+    grid-area: 1/1/3/3 !important;
+    border-radius: 10px !important;
+    width: 100%;
+    /* object-position: top; */
+  }
+  .user-details-edit > div:nth-child(2) > :nth-child(4),
+  .user-details-edit > div:nth-child(2) > :nth-child(8),
+  .user-details-edit > div:nth-child(2) > :nth-child(12),
+  .user-details-edit > div:nth-child(2) > :nth-child(5) {
+    grid-column: 1/3 !important;
+  }
+  .user-details-edit > div:nth-child(2) > :last-child {
+    grid-column: 1/3 !important;
+  }
+  .user-details-edit > div:nth-child(2) > div:nth-child(9) {
+    padding-left: 10px !important;
+  }
+  .user-details-edit > div:nth-child(2) > :nth-child(10) {
+    grid-area: 8/1/9/3 !important;
+  }
+  .user-details-edit > div:nth-child(2) > :nth-child(11) {
+    grid-area: 9/1/10/3 !important;
+  }
+  .user-details-edit > div:nth-child(2) > :nth-child(12) {
+    grid-column: 2/3 !important;
+  }
+  .user-details-edit > div:nth-child(2) > :nth-child(9) {
+    gap: 10px !important;
+  }
+}

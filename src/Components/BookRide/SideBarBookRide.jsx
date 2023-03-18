@@ -8,6 +8,9 @@ import axios from 'axios';
 import { BsCheckCircleFill } from 'react-icons/bs';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { IoArrowRedoCircleSharp } from 'react-icons/io5';
+import { useMediaQuery } from 'react-responsive';
+import PlacesAutocomplete from '../Map/PlaceAutoComplete';
+import PlaceAutoComplete2 from '../Map/PlaceAutoComplete2';
 
 const SideBarBookRide = ({ data }) => {
   // console.log('data', data)
@@ -15,6 +18,7 @@ const SideBarBookRide = ({ data }) => {
   const dispatch = useDispatch();
   const token = 'Bearer ' + localStorage.getItem('token');
   const bookRidePosition = useSelector(state => state.BookRide.position);
+  const isTablet = useMediaQuery({ query: '(max-width: 912px)' });
   const bookRide = useSelector(state => state.BookRide);
   const driver = useSelector(state => state.BookRide.selectedDriver);
   const [form, setForm] = useState({
@@ -30,10 +34,12 @@ const SideBarBookRide = ({ data }) => {
 
   const handleClick1 = e => {
     axios
-      .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/drivers', {
+      .get('http://localhost:9001/map/drivers', {
         params: {
-          start: form.start,
-          end: form.end,
+          start: bookRide.route.start,
+          end: bookRide.route.end,
+          startCoord: bookRide.startCoord,
+          endCoord: bookRide.endCoord,
         },
         headers: {
           Authorization: token,
@@ -41,9 +47,10 @@ const SideBarBookRide = ({ data }) => {
       })
       .then(res => {
         console.log('res.data', res.data);
-        dispatch(BookRideActions.setRoute(form));
+        // dispatch(BookRideActions.setRoute(form));
         dispatch(BookRideActions.setDrivers(res.data.drivers));
         // dispatch(BookRideActions.goForward())
+        dispatch(BookRideActions.setPrice(res.data.price));
         dispatch(BookRideActions.setDriversVisible(true));
       })
       .catch(err => {
@@ -55,14 +62,15 @@ const SideBarBookRide = ({ data }) => {
     // here we should create the bpooking
     axios
       .post(
-        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
+        'http://localhost:9001/map/booking',
         {
           DriverId: driver.id,
           RiderId: user.id,
           userId: user.id,
           start: bookRide.route.start,
           end: bookRide.route.end,
-          price: 100.0,
+          startCoord: bookRide.startCoord,
+          endCoord: bookRide.endCoord,
         },
         {
           headers: {
@@ -84,22 +92,22 @@ const SideBarBookRide = ({ data }) => {
   const handleClick3 = (e, i) => {
     if (i === 0) {
       dispatch(BookRideActions.goForward());
-      // axios.put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',{state : 1})
+      // axios.put('http://localhost:9001/map/booking',{state : 1})
     } else {
       axios
-        .put(
-          'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
-          { state: 2, userId: user.id },
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        )
+        .delete('http://localhost:9001/map/booking/' + bookRide.actualBooking.id, {
+          headers: {
+            Authorization: token,
+          },
+          data: {
+            userId: user.id,
+          },
+        })
         .then(res => {
           console.log('res.data', res.data);
           // console.log('aaaaaa')
           // dispatch(BookRideActions.setActualBooking(res.data.booking));
+          dispatch(BookRideActions.goBackward());
           dispatch(BookRideActions.goBackward());
         })
         .catch(err => {
@@ -111,7 +119,7 @@ const SideBarBookRide = ({ data }) => {
   const handleClick4 = e => {
     axios
       .put(
-        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
+        'http://localhost:9001/map/booking',
         { state: 2, userId: user.id },
         {
           headers: {
@@ -129,6 +137,11 @@ const SideBarBookRide = ({ data }) => {
         console.log('err', err);
       });
   };
+
+  const handleCompleteRide = () => {
+    dispatch(BookRideActions.setIsPaymentDisplay(true));
+  };
+
   return (
     <div>
       {bookRidePosition === 0 && (
@@ -136,12 +149,33 @@ const SideBarBookRide = ({ data }) => {
           <p>{data.part1.title}</p>
           <div>
             {data.part1.inputs.map((el, i) => {
+              console.log('el', el);
               return (
-                <div key={i}>
+                <div
+                  key={i}
+                  onClick={() => {
+                    if (i === 0) {
+                      navigator.geolocation.getCurrentPosition(
+                        position => {
+                          console.log('position', position);
+                          const lat = position.coords.latitude;
+                          const lng = position.coords.longitude;
+                          dispatch(BookRideActions.setRoute({ ...bookRide.route, start: `${lat.toFixed(2)} , ${lng.toFixed(2)}` }));
+
+                          dispatch(BookRideActions.setStartCoord({ lat, lng }));
+                        },
+                        err => {
+                          console.log('err', err);
+                        }
+                      );
+                    }
+                  }}
+                >
                   <label>{el.label}</label>
                   <div>
                     <MdLocationOn color={i === 0 ? '#02A238' : '#ED1A43'} size={17} />
-                    <input type={el.type} placeholder={el.placeholder} name={el.name} value={form[el.name]} onChange={handleChangeByName} />
+                    {(i === 1 || i===0) && <PlaceAutoComplete2 key={i} point={i === 0 ? 'start' : 'end'} placeholder={el.placeholder} />}
+                    {/* {i === 0 && <p>bookRide.startLongNameSelect your location</p>} */}
                   </div>
                 </div>
               );
@@ -153,7 +187,13 @@ const SideBarBookRide = ({ data }) => {
       {bookRidePosition === 1 && (
         <div className="book-ride-part-2-container">
           <p>
-            <HiArrowLeft size={20} /> {data.part3.title}
+            <HiArrowLeft
+              size={20}
+              onClick={() => {
+                dispatch(BookRideActions.goBackward());
+              }}
+            />{' '}
+            {data.part3.title}
           </p>
           <div>
             <img src={driver.profilePic} alt={driver.userName} />
@@ -168,7 +208,7 @@ const SideBarBookRide = ({ data }) => {
           </div>
           <div>
             <p>{data.part3.areas[1].title}</p>
-            <p>$100</p>
+            <p>${parseFloat(bookRide.price).toFixed(2)}</p>
           </div>
           <div>
             <p>
@@ -184,13 +224,15 @@ const SideBarBookRide = ({ data }) => {
       )}
       {bookRidePosition === 2 && (
         <div className="book-ride-part-3-container">
-          <IoIosCheckmarkCircle color="#02A238" size={150} />
+          <IoIosCheckmarkCircle color="#02A238" size={isTablet ? 75 : 150} />
           <p>{data.part4.title}</p>
           <div>
             <img src={driver.profilePic} alt={driver.userName} />
             <p>{driver.lastName + ' ' + driver.firstName}</p>
             <p>{driver.phone}</p>
-            <p>{driver.vehicleNumber} | $100</p>
+            <p>
+              {driver.vehicleNumber} | ${parseFloat(bookRide.price).toFixed(2)}
+            </p>
           </div>
           <div>
             <p>
@@ -239,7 +281,7 @@ const SideBarBookRide = ({ data }) => {
           </div>
           <div>
             <p>{bookRide.actualBooking.driver.vehicleNumber}</p>
-            <p>$100.00</p>
+            <p>${parseFloat(bookRide.price).toFixed(2)}</p>
           </div>
           <div>
             {bookRidePosition === 3 &&
@@ -250,7 +292,7 @@ const SideBarBookRide = ({ data }) => {
                   </button>
                 );
               })}
-            {bookRidePosition === 4 && <button >{data.part6.button.value}</button>}
+            {bookRidePosition === 4 && <button onClick={() => handleCompleteRide()}>{data.part6.button.value}</button>}
           </div>
         </div>
       )}

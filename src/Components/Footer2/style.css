@@ -1,28 +1,51 @@
-.footer2-container{
-    display: flex;
-    padding: var(--primary-padding);
-    padding-top: 20px;
-    padding-bottom: 20px;
-    background-color: #FFF1F4;
-    align-items: center;
-    justify-content: space-between;
+.footer2-container {
+  display: flex;
+  padding: var(--primary-padding);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: #fff1f4;
+  align-items: center;
+  justify-content: space-between;
 }
-.footer2-container  div{
-    display: flex;
-    align-items: center;
-}
-.footer2-container > div{
-    gap : 50px;
-    align-items: center;
-}
-.footer2-container > div > div{
-    gap : 8px;
-    align-items: center;
-    font-size: 15px;
-    letter-spacing: 0;
-    font-weight: bold;
+.footer2-container div {
+  display: flex;
+  align-items: center;
 }
 
-.footer2-container > p{
+.footer2-container > div {
+  gap: 50px;
+  align-items: center;
+}
+.footer2-container > div > div {
+  gap: 8px;
+  align-items: center;
+  font-size: 15px;
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+.footer2-container > p {
+  font-size: 14px;
+}
+
+@media only screen and (max-width: 600px) {
+  .footer2-container {
+    display: flex;
+    padding: 10px 5px;
+    background-color: #fff1f4;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .footer2-container > div {
+    gap: 20px;
+    align-items: center;
+  }
+  .footer2-container > div > div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     font-size: 14px;
+    gap: 15px;
+  }
 }

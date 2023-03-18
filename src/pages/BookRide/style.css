@@ -1,12 +1,13 @@
 .book-ride-main-container {
-  height: calc(100vh - 113px - 73px);
+  height: fit-content;
+  padding: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .book-ride-main-container > div {
-  height: 500px;
+  height: fit-content;
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -35,4 +36,34 @@
 
 .book-ride-main-container > div:first-child > :nth-child(2) {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+@media only screen and (max-width: 912px) {
+  .book-ride-main-container > div {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .book-ride-main-container .map {
+    height: 38vh;
+    width: 100%;
+    max-width: calc(100vw - 16px);
+    object-fit: cover;
+  }  
+  .book-ride-main-container {
+    padding: 15px 5px;
+    height: fit-content;
+  }
+  .book-ride-main-container > div {
+    height: fit-content;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
 }

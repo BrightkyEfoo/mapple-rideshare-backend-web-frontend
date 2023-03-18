@@ -12,6 +12,7 @@ import { cities } from '../../helpers/cities';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import { userListActions } from '../../rtk/features/AdminUserListReload';
+import { City, State } from 'country-state-city';
 
 const UserCreateForm = () => {
   const dispatch = useDispatch();
@@ -27,11 +28,12 @@ const UserCreateForm = () => {
     password: '',
     rePassword: '',
     phone: user?.phone || '',
-    city: user?.city || '',
+    city: user?.city || 'none',
     acceptNewsletters: user?.acceptNewsletters || false,
     email: user?.email || '',
     accessLevel: user?.accessLevel || 0,
     country: user?.country || 'CA',
+    province : user?.province || 'none'
   });
   const Token = 'Bearer ' + localStorage.getItem('token');
   const User = JSON.parse(localStorage.getItem('user')); //this is the admin
@@ -39,7 +41,7 @@ const UserCreateForm = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=createuserform&language=EN`)
+      .get(`http://localhost:9001/front-end/?name=createuserform&language=EN`)
       .then(res => {
         setData(res.data.view);
       })
@@ -74,12 +76,13 @@ const UserCreateForm = () => {
       form.sex &&
       form.phone &&
       form.country &&
+      form.province &&
       form.city
     ) {
       if (!user?.id) {
         axios
           .post(
-            'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/admin',
+            'http://localhost:9001/user/admin',
             { userId: User?.id, submission: form },
             {
               headers: {
@@ -108,7 +111,7 @@ const UserCreateForm = () => {
           }
         });
         axios
-          .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/admin', data, {
+          .put('http://localhost:9001/user/admin', data, {
             headers: {
               Authorization: Token,
             },
@@ -166,21 +169,30 @@ const UserCreateForm = () => {
                           </select>
                         </div>
                         <div>
+                          <p>Province</p>
+                          <select name='province' onChange={handleChangeByName} defaultValue={form.province}>
+                          <option key="none to select" value={'none'} disabled hidden>
+                              Select a province
+                            </option>
+                            {
+                              State.getStatesOfCountry(form.country).map((el,i)=>{
+                                return <option key={i} value={el.isoCode}>{el.name}</option>
+                              })
+                            }
+                          </select>
+                        </div>
+                        <div>
                           <p>{el.subTitle}</p>
-                          <select name="city" onChange={handleChangeByName} defaultValue={form.city || 'none'}>
+                          <select name="city" onChange={handleChangeByName} defaultValue={form.city}>
                             <option key="none to select" value={'none'} disabled hidden>
                               Select a city
                             </option>
-                            {cities
-                              .filter(city => city.country === form.country)
-                              .map((city, j) => {
-                                return (
-                                  <option value={city.city} key={`city-${i}-${j}`}>
-                                    {city.city}
-                                  </option>
-                                );
-                              })}
-                              
+                            {
+                              City.getCitiesOfState(form.country,form.province).map((el,i)=>{
+                                return <option key={i} value={el.name}>{el.name}</option>
+                              })
+                            }
+
                           </select>
                         </div>
                       </div>
@@ -285,6 +297,7 @@ const UserCreateForm = () => {
                     form.sex &&
                     form.phone &&
                     form.country &&
+                    form.province &&
                     form.city
                       ? 'canSubmit'
                       : 'simple'

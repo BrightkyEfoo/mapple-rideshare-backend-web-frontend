@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* max-width: 1500px; */
 }
 
 :root {
@@ -9,8 +10,31 @@
   --primary-red: #ed1a43;
   --primary-white: #fff;
   --primary-black: #000;
-  --primary-text-sm : 14px;
-  --primary-text-md : 16px;
-  --primary-text-lg : 18px;
-  --primary-text-xl : 20px;
+  --primary-text-sm: 14px;
+  --primary-text-md: 16px;
+  --primary-text-lg: 18px;
+  --primary-text-xl: 20px;
 }
+
+/* @media only screen and (min-width: 1900px) {
+  html {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 100vw;
+  }
+  * {
+    max-width: 1900px;
+  }
+} */
+
+.small-profile-pic {
+  height: 25px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* 
+.MuiBadge-colorPrimary {
+  background-color: red !important;
+} */

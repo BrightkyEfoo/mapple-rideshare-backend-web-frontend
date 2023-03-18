@@ -1,0 +1,68 @@
+.small-payment-popup-container {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.small-payment-popup-container-1,
+.small-payment-popup-container-2 {
+  background-color: white;
+  border-radius: 10px;
+  /* padding:0; */
+  padding: 0 0 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.small-payment-popup-container-1 > button , .small-payment-popup-container-2 > button , .small-payment-button{
+  /* width: 100px; */
+  align-self: center;
+  background-color: var(--primary-red);
+  font-weight: 700;
+  font-size: 16px;
+  padding: 8px 25px;
+  width: 150px;
+  color: white;
+  margin : 15px auto;
+  border: 1px solid var(--primary-red);
+  border-radius: 5px;
+}
+
+.small-payment-popup-container-1 > :first-child , .small-payment-popup-container-2 > :first-child {
+  font-size: 18px;
+  padding: 15px;
+  border-bottom: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.small-payment-popup-sub-container-1 , .small-payment-popup-sub-container-2{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 15px;
+  padding: 15px;
+}
+
+.small-payment-popup-sub-container-1 > button  {
+  height: 30px;
+  background-color: rgba(221, 221, 221, 0.479);
+  border: 1px rgba(128, 128, 128, 0.301) solid;
+  color: gray;
+  box-shadow: 2px 5px 10px 0px #96969681;
+  cursor: pointer;
+}
+
+.small-payment-popup-container-2 {
+}

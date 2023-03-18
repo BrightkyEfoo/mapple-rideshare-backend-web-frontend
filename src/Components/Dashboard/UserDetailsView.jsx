@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 // import cities from 'cities.json';
+import { Country, State, City } from 'country-state-city';
 import { cities } from '../../helpers/cities';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
@@ -7,8 +8,13 @@ import axios from 'axios';
 import './userDetails.css';
 import { BiImageAdd } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 const UserDetailsView = () => {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
+  const isTablet = useMediaQuery({ query: '(max-width: 920px)' });
+  const isSmallTablet = useMediaQuery({ query: '(max-width: 730px)' });
+
   const user = JSON.parse(localStorage.getItem('user'));
   const Token = 'Bearer ' + localStorage.getItem('token');
   const [form, setForm] = useState({
@@ -17,6 +23,7 @@ const UserDetailsView = () => {
     userName: user.userName,
     acceptNewsletters: user.acceptNewsletters,
     country: user.country,
+    province: user.province,
     email: user.email,
     city: user.city,
     password: '',
@@ -47,7 +54,7 @@ const UserDetailsView = () => {
   const [countries, setCountries] = useState(null);
   useEffect(() => {
     axios
-      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=riderloginform&language=EN`)
+      .get(`http://localhost:9001/front-end/?name=riderloginform&language=EN`)
       .then(res => {
         console.log('countries', res.data.view.content.register.first.inputs.filter(el => el.title === 'Country')[0].values);
         setCountries(res.data.view.content.register.first.inputs.filter(el => el.title === 'Country')[0].values);
@@ -82,7 +89,7 @@ const UserDetailsView = () => {
         formData.append('addImage', image.data);
         console.log('formData', formData);
         axios
-          .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/addImageToServer', formData, {
+          .post('http://localhost:9001/addImageToServer', formData, {
             headers: {
               Authorization: Token,
             },
@@ -90,7 +97,7 @@ const UserDetailsView = () => {
           .then(res => {
             data.userSubmit.profilePic = res.data.url;
             axios
-              .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/', data, {
+              .put('http://localhost:9001/user/', data, {
                 headers: {
                   Authorization: Token,
                 },
@@ -110,7 +117,7 @@ const UserDetailsView = () => {
           });
       } else {
         axios
-          .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/', data, {
+          .put('http://localhost:9001/user/', data, {
             headers: {
               Authorization: Token,
             },
@@ -189,36 +196,38 @@ const UserDetailsView = () => {
           </select>
         </div>
         <div>
+          <p>province</p>
+          <select name="province" onChange={handleChangeByName} defaultValue={form.province}>
+            <option key="none to select" value={'none'} disabled hidden>
+              Select a province
+            </option>
+            {State.getStatesOfCountry(form.country).map((el, i) => {
+              return (
+                <option key={i} value={el.isoCode} /* selected={form.province === el.isoCode} */>
+                  {el.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div>
           <p>city</p>
           <select name="city" onChange={handleChangeByName} defaultValue={form.city}>
             <option key="none to select" value={'none'} disabled hidden>
               Select a city
             </option>
-            {cities
-              .filter(city => city.country === form.country)
-              .map((city, j) => {
-                return (
-                  <option value={city.city} key={`city-${j}`} selected={form.city === city.city}>
-                    {city.city}
-                  </option>
-                );
-              })}
+            {City.getCitiesOfState(form.country, form.province).map((el, i) => {
+              return (
+                <option key={i} value={el.name} /* selected={form.city === el.name} */>
+                  {el.name}
+                </option>
+              );
+            })}
           </select>
         </div>
-
         <div>
           <p>email</p>
           <input type="email" name="email" value={form.email} onChange={handleChangeByName} checked={form.sex === 'F'} />
-        </div>
-        <div>
-          <div>
-            <input name={'sex'} onChange={handleChangeByName} type="radio" value="M" checked={form.sex === 'M'} />
-            <p>Male</p>
-          </div>
-          <div>
-            <input name={'sex'} onChange={handleChangeByName} type="radio" value="F" />
-            <p>Female</p>
-          </div>
         </div>
 
         <div>
@@ -235,7 +244,7 @@ const UserDetailsView = () => {
         <div>
           <div>
             <p>re-type your password</p>
-            {form.password !== form.rePassword && <p className='err-message'>no matching</p>}
+            {form.password !== form.rePassword && <p className="err-message">no matching</p>}
           </div>
           <input
             type="password"
@@ -245,6 +254,16 @@ const UserDetailsView = () => {
             onChange={handleChangeByName}
             placeholder="leave it blank to save it unchanged"
           />
+        </div>
+        <div className='inputs-block-sex'>
+          <div>
+            <input name={'sex'} onChange={handleChangeByName} type="radio" value="M" checked={form.sex === 'M'} />
+            <p>Male</p>
+          </div>
+          <div>
+            <input name={'sex'} onChange={handleChangeByName} type="radio" value="F" />
+            <p>Female</p>
+          </div>
         </div>
 
         <div>

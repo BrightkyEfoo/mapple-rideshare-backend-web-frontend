@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Pagination, Navigation, Thumbs, Autoplay } from 'swiper';
 import './swiper-bundle.css';
 import { ellipsis } from '../../helpers';
+import { useMediaQuery } from 'react-responsive';
 // import './style.css';
 SwiperCore.use([Navigation, Pagination, Thumbs, Autoplay]);
 
@@ -35,11 +36,14 @@ export default Section4;
 
 
 export const Slide = ({data})=>{
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 912px)' })
+
     return <div className='homepage-section4-container-slide'>
         <img src={data.image} alt='' />
         <div>
             <p>{ellipsis(250 , data.main)}</p>
             <p>{data.name}</p>
         </div>
+        {/* {isTabletOrMobile && <p>{data.name}</p>} */}
     </div>
 }

@@ -14,7 +14,7 @@ const AdminLoginForm = ({ type }) => {
   // console.log('location', Location)
   useEffect(() => {
     axios
-      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=adminloginform&language=EN`)
+      .get(`http://localhost:9001/front-end/?name=adminloginform&language=EN`)
       .then(res => {
         setData(res.data.view.content);
         document.title = 'admin login';
@@ -34,7 +34,7 @@ const AdminLoginForm = ({ type }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     axios
-      .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/admin/login', form)
+      .post('http://localhost:9001/admin/login', form)
       .then(res => {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);

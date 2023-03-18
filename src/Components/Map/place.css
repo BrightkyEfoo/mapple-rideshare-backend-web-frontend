@@ -1,0 +1,23 @@
+.place-finder-field{
+    font-size: 14px;
+    flex-grow : 0
+}
+
+.place-finder-field > ul{
+    list-style: none;
+}
+
+.place-finder-field > ul > li{
+    transition: all ease 150ms;
+    cursor: pointer;
+}
+
+
+.place-finder-field > ul > li:hover{
+    transform: scale(1.1);
+    padding: 5px;
+    margin: 5px;
+    border-radius: 8px;
+    background-color: rgba(62, 246, 62, 0.532);
+
+}

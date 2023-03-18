@@ -2,15 +2,17 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
+import { useMediaQuery } from 'react-responsive';
 
 const Footer2 = () => {
   const [data, setData] = useState(null);
+  const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   // const dispatch()
   useEffect(() => {
     axios
-      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=footer2&language=EN`)
+      .get(`http://localhost:9001/front-end/?name=footer2&language=EN`)
       .then(res => {
         setData(res.data.view.content);
         // console.log(res.data)
@@ -28,7 +30,7 @@ const Footer2 = () => {
             return (
               <React.Fragment key={i}>
                 <p onClick={() => navigate(el.url)}>{el.name}</p>
-                {i < data.links.length - 1 && <span>|</span>}
+                {i < data.links.length - 1 && !isMobile && <span>|</span>}
               </React.Fragment>
             );
           })}

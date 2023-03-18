@@ -1,61 +1,118 @@
-img.logo{
-    height :73px;
-    object-fit: contain;
+img.logo {
+  height: 73px;
+  object-fit: contain;
 }
 
-.navbar-container{
+.navbar-container {
+  display: flex;
+  padding: var(--primary-padding);
+  background-color: var(--primary-red);
+  color: var(--primary-white);
+  font-weight: 600;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--primary-text-sm);
+  position: relative;
+}
+
+.navbar-container > div:nth-child(1) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.navbar-container > div:nth-child(2) {
+  display: flex;
+  gap: 35px;
+  align-items: center;
+}
+
+@media only screen and (max-width: 912px) {
+  .navbar-container > div:nth-child(2) {
     display: flex;
-    padding: var(--primary-padding);
-    background-color: var(--primary-red);
-    color: var(--primary-white);
-    font-weight: 600;
-    justify-content: space-between;
+    gap: 20px;
     align-items: center;
-    font-size: var(--primary-text-sm);
+  }
 }
-
-.navbar-container > div:nth-child(1){
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.navbar-container > div:nth-child(2){
-    display: flex;
-    gap: 35px ;
-    align-items: center;
-}
-
 .navbar-container > div:nth-child(2) button {
-    padding: 10px 25px;
-    border: 2px solid var(--primary-white);
-    cursor: pointer;
-    color: var(--primary-white);
-    border-radius: 25px;
-    background-color: transparent;
+  padding: 10px 25px;
+  border: 2px solid var(--primary-white);
+  cursor: pointer;
+  color: var(--primary-white);
+  border-radius: 25px;
+  background-color: transparent;
 }
 
 .navbar-container > div:nth-child(2) > button.filled {
-    background-color: var(--primary-white);
-    color: var(--primary-red);
+  background-color: var(--primary-white);
+  color: var(--primary-red);
+}
+
+.navbar-container button.df {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 10px 3px 2px !important;
+  /* padding-right: 10px; */
+  color: black !important;
+  font-weight: bold;
+  gap: 10px;
+}
+.navbar-container button.df img {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 
-.navbar-container button.df{
+#navbar-menu-button{
+    border-radius: 0;
+    padding: 8px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 3px 10px 3px 2px !important;
-    /* padding-right: 10px; */
-    color: black !important;
-    font-weight: bold;
-    gap:10px;
-}
-.navbar-container button.df img{
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    object-fit: cover;
+    justify-content: center;
+    cursor: pointer;
 }
 
+@media only screen and (max-width: 912px) {
+  .navbar-container{
+    padding: 0 15px;
+  }
+}
+
+#navbar-mobile-container > div {
+    position: absolute;
+    top: 99%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-red);
+    width: 100vw;
+    color: white;
+    z-index: 100;
+}
+
+#navbar-mobile-container > div > div{
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border : 1px solid white;
+}
+
+#navbar-mobile-container > div > div:first-child{
+    border-top: none;
+}
+
+
+#navbar-mobile-container > div > div:last-child{
+    border: none;
+}
+
+
+#navbar-mobile-container > div > div:nth-child(4){
+    border-bottom: none;
+}

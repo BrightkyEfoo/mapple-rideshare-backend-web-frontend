@@ -10,9 +10,11 @@ import 'digitinputs-react/dist/index.css';
 import { RiderLoginFormActions } from '../../rtk/features/RiderLoginFormSlice';
 // import cities from 'cities.json';
 import { cities } from '../../helpers/cities';
+import { Country, State, City } from 'country-state-city';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import { validateEmail, validateName } from '../../helpers';
+import { socket } from '../../Socket';
 
 const RiderLoginForm = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,24 @@ const RiderLoginForm = () => {
   });
   const navigate = useNavigate();
   // const [logForm , ]
+  const [touched, setTouched] = useState({
+    number: false,
+    code: false,
+    firstName: false,
+    lastName: false,
+    userName: false,
+    sex: false,
+    password: false,
+    rePassword: false,
+    reEmail: false,
+    phone: false,
+    city: false,
+    acceptTerms: false,
+    acceptNewsletters: false,
+    email: false,
+    country: false,
+    province: false,
+  });
   const [form, setForm] = useState({
     number: '',
     code: '',
@@ -33,12 +53,14 @@ const RiderLoginForm = () => {
     sex: '',
     password: '',
     rePassword: '',
+    reEmail: '',
     phone: '',
     city: '',
     acceptTerms: false,
     acceptNewsletters: false,
     email: '',
     country: 'CA',
+    province: '',
   });
   const isVisible = useSelector(state => state.RiderLoginForm.isVisible);
   const position = useSelector(state => state.RiderLoginForm.position);
@@ -46,7 +68,7 @@ const RiderLoginForm = () => {
   //   const location = useLocation();
   useEffect(() => {
     axios
-      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=${type}loginform&language=EN`)
+      .get(`http://localhost:9001/front-end/?name=${type}loginform&language=EN`)
       .then(res => {
         setData(res.data.view);
       })
@@ -63,22 +85,84 @@ const RiderLoginForm = () => {
     });
   };
 
-  const handleSubmit1 = e => {
-    if (
+  const handleSetTouchedByName = e => {
+    if (!touched[e.target.name]) {
+      setTouched(prev => {
+        prev[e.target.name] = true;
+        console.log('touched', prev);
+        return { ...prev };
+      });
+    }
+  };
+  const handleVerifyByName = name => {
+    switch (name) {
+      case 'userName':
+        return form.userName.length >= 5;
+      case 'firstName':
+        return validateName(form.firstName);
+      case 'lastName':
+        return validateName(form.lastName);
+      case 'password':
+        return form.password.length >= 8;
+      case 'email':
+        return validateEmail(form.email);
+      case 'reEmail':
+        return form.email === form.reEmail;
+      case 'rePassword':
+        return form.rePassword.length >= 8 && form.password === form.rePassword;
+      case 'sex':
+        return !!form.sex;
+      case 'phone':
+        return !!form.phone;
+      case 'country':
+        return !!form.country;
+      case 'city':
+        return !!form.city;
+      case 'province':
+        return !!form.province;
+      case 'acceptTerms':
+        return !!form.acceptTerms;
+      default:
+        return true;
+      // break
+    }
+  };
+  const isAllValid = () => {
+    return (
       form.userName.length >= 3 &&
       validateEmail(form.email) &&
       form.password.length >= 8 &&
       form.password === form.rePassword &&
+      form.email === form.reEmail &&
       validateName(form.firstName) &&
       validateName(form.lastName) &&
       form.sex &&
       form.phone &&
       form.country &&
       form.city &&
+      form.province &&
       form.acceptTerms
-    ) {
+    );
+  };
+  const handleSetName = el => {
+    return el.title === 'Username'
+      ? 'userName'
+      : el.title === 'Email'
+      ? 'email'
+      : el.title === 'Retype Email'
+      ? 'reEmail'
+      : el.title === 'Password'
+      ? 'password'
+      : el.title === 'Password again'
+      ? 'rePassword'
+      : el.title === 'First name'
+      ? 'firstName'
+      : 'lastName';
+  };
+  const handleSubmit1 = e => {
+    if (isAllValid()) {
       axios
-        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user', { ...form, accessLevel: type === 'driver' ? 1 : 0 })
+        .post('http://localhost:9001/user', { ...form, accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);
@@ -86,15 +170,38 @@ const RiderLoginForm = () => {
           // localStorage.setItem('user', JSON.stringify(res.data.user))
         })
         .catch(err => {
+          setLoginError({ isError: true, msg: err.response.data.msg });
+          setTimeout(() => {
+            setLoginError({ isError: false, msg: '' });
+          }, 5000);
           console.log('err', err);
         });
+    } else {
+      setTouched({
+        number: true,
+        code: true,
+        firstName: true,
+        lastName: true,
+        userName: true,
+        sex: true,
+        password: true,
+        rePassword: true,
+        reEmail: true,
+        phone: true,
+        city: true,
+        acceptTerms: true,
+        acceptNewsletters: true,
+        email: true,
+        country: true,
+        province: true,
+      });
     }
   };
   const handleSubmit2 = e => {
     const token = 'Bearer ' + localStorage.getItem('token');
     axios
       .post(
-        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/verify-email',
+        'http://localhost:9001/user/verify-email',
         { ...form },
         {
           headers: {
@@ -108,6 +215,8 @@ const RiderLoginForm = () => {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         dispatch(RiderLoginFormActions.setIsVisible(false));
         dispatch(RiderLoginFormActions.setPosition(0));
+        // socket.connect({userId : res.data.user.id})
+        socket.emit('login', { userId: res.data.user.id });
         navigate('/dashboard');
       })
       .catch(err => {
@@ -126,7 +235,7 @@ const RiderLoginForm = () => {
   const handleLogin1 = () => {
     if (validateEmail(form.email) && form.password.length >= 8) {
       axios
-        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password, accessLevel: type === 'driver' ? 1 : 0 })
+        .post('http://localhost:9001/user/login', { email: form.email, password: form.password, accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);
@@ -136,7 +245,7 @@ const RiderLoginForm = () => {
           setLoginError({ isError: true, msg: err.response.data.msg });
           setTimeout(() => {
             setLoginError({ isError: false, msg: '' });
-          }, 1000);
+          }, 5000);
           console.log('err', err);
         });
     }
@@ -156,6 +265,7 @@ const RiderLoginForm = () => {
                 if (el.type === 'radio') {
                   return (
                     <div key={i}>
+                      {!handleVerifyByName('sex') && touched.sex && <p className="small-error-alert-text">{el.error}</p>}
                       {el.title.map((ell, j) => {
                         return (
                           <div key={'radio-' + i + '-' + j}>
@@ -171,8 +281,13 @@ const RiderLoginForm = () => {
                     return (
                       <div key={i}>
                         <div>
-                          <p>{el.title}</p>
-                          <select name="country" onChange={handleChangeByName}>
+                          <p>
+                            {el.title}{' '}
+                            {touched.country && !handleVerifyByName('country') && (
+                              <span className="small-error-alert-text">Please choose a country</span>
+                            )}
+                          </p>
+                          <select name="country" onChange={handleChangeByName} onBlur={handleSetTouchedByName}>
                             {el.values.map((ell, j) => {
                               return (
                                 <option value={ell.abbr} key={'select-' + i + '-' + j}>
@@ -183,20 +298,43 @@ const RiderLoginForm = () => {
                           </select>
                         </div>
                         <div>
-                          <p>{el.subTitle}</p>
-                          <select name="city" onChange={handleChangeByName} defaultValue={'none'}>
+                          <p>
+                            Province{' '}
+                            {touched.province && !handleVerifyByName('province') && (
+                              <span className="small-error-alert-text">Please choose a province</span>
+                            )}
+                          </p>
+                          <select name="province" onChange={handleChangeByName} defaultValue={'none'} onBlur={handleSetTouchedByName}>
+                            <option key="none to select" value={'none'} disabled hidden>
+                              Select a province
+                            </option>
+                            {State.getStatesOfCountry(form.country).map((el, i) => {
+                              return (
+                                <option key={i} value={el.isoCode}>
+                                  {el.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        <div>
+                          <p>
+                            {el.subTitle}{' '}
+                            {touched.city && !handleVerifyByName('city') && (
+                              <span className="small-error-alert-text">Please choose a city</span>
+                            )}
+                          </p>
+                          <select name="city" onChange={handleChangeByName} defaultValue={'none'} onBlur={handleSetTouchedByName}>
                             <option key="none to select" value={'none'} disabled hidden>
                               Select a city
                             </option>
-                            {cities
-                              .filter(city => city.country === form.country)
-                              .map((city, j) => {
-                                return (
-                                  <option value={city.city} key={`city-${i}-${j}`}>
-                                    {city.city}
-                                  </option>
-                                );
-                              })}
+                            {City.getCitiesOfState(form.country, form.province).map((el, i) => {
+                              return (
+                                <option key={i} value={el.name}>
+                                  {el.name}
+                                </option>
+                              );
+                            })}
                           </select>
                         </div>
                       </div>
@@ -204,6 +342,10 @@ const RiderLoginForm = () => {
                 } else if (el.type === 'phone') {
                   return (
                     <div key={i}>
+                      <p>
+                        {el.title}{' '}
+                        {touched.phone && !handleVerifyByName('phone') && <span className="small-error-alert-text">{el.error}</span>}
+                      </p>
                       <PhoneInput
                         countries={['CA', 'US']}
                         defaultCountry="CA"
@@ -217,6 +359,7 @@ const RiderLoginForm = () => {
                             return { ...prev };
                           })
                         }
+                        onBlur={handleSetTouchedByName}
                       />
                     </div>
                   );
@@ -234,31 +377,30 @@ const RiderLoginForm = () => {
                           })
                         }
                       />
-                      <p>{el.title}</p>
+                      <p>
+                        {el.title}{' '}
+                        {el.name === 'acceptTerms' && !handleVerifyByName('acceptTerms') && touched.acceptTerms && (
+                          <span className="small-error-alert-text">{el.error}</span>
+                        )}
+                      </p>
                     </div>
                   );
                 } else {
                   return (
                     <div key={i}>
-                      <p>{el.title}</p>
+                      <p className="register-input-label">
+                        {el.title}{' '}
+                        {touched[handleSetName(el)] && !handleVerifyByName(handleSetName(el)) && (
+                          <span className="small-error-alert-text">{el.error}</span>
+                        )}
+                      </p>
                       <input
                         type={el.type}
-                        name={
-                          el.title === 'Username'
-                            ? 'userName'
-                            : el.title === 'Email'
-                            ? 'email'
-                            : el.title === 'Password'
-                            ? 'password'
-                            : el.title === 'Password again'
-                            ? 'rePassword'
-                            : el.title === 'First name'
-                            ? 'firstName'
-                            : 'lastName'
-                        }
+                        name={handleSetName(el)}
                         autoComplete={el.type === 'password' ? 'new-password' : 'off'}
                         placeholder={el.placeholder}
                         onChange={handleChangeByName}
+                        onBlur={handleSetTouchedByName}
                       />
                     </div>
                   );
@@ -266,24 +408,7 @@ const RiderLoginForm = () => {
               })}
             </div>
             <div>
-              <button
-                className={
-                  form.userName.length >= 3 &&
-                  validateEmail(form.email) &&
-                  form.password.length >= 8 &&
-                  form.password === form.rePassword &&
-                  validateName(form.firstName) &&
-                  validateName(form.lastName) &&
-                  form.sex &&
-                  form.phone &&
-                  form.country &&
-                  form.city &&
-                  form.acceptTerms
-                    ? 'canSubmit'
-                    : 'simple'
-                }
-                onClick={handleSubmit1}
-              >
+              <button className={isAllValid() ? 'canSubmit' : 'simple'} onClick={handleSubmit1}>
                 {data.content.register.first.button.title}
               </button>
             </div>
@@ -322,6 +447,7 @@ const RiderLoginForm = () => {
             </div>
           </div>
         )}
+        {loginError.isError && <div className="error-alert">{loginError.msg}</div>}
       </div>
     ) : (
       <div className="rider-login-form">

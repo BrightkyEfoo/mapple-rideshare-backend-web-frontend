@@ -291,3 +291,14 @@ button.disabled {
   left: 18px;
   top: -25px;
 }
+
+@media only screen and (max-width: 912px) {
+  .dashboard-side-bar {
+    width: 200px !important;
+    font-size: 0.8rem !important;
+  }
+  .dashboard-side-bar-title-container {
+    width: 100%;
+    font-size: 0.8rem !important;
+  }
+}

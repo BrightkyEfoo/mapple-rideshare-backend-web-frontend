@@ -1,0 +1,14 @@
+.notification-card-container {
+  padding: 15px;
+  box-shadow: 0 0 14px 2px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  margin: 10px;
+}
+.notification-card-container-new {
+  padding: 15px;
+  box-shadow: 0 0 14px 2px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  margin: 10px;
+  border: none;
+  border-left: solid var(--primary-red) 5px;
+}
