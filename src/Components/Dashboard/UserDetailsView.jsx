@@ -54,7 +54,7 @@ const UserDetailsView = () => {
   const [countries, setCountries] = useState(null);
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=riderloginform&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=riderloginform&language=EN`)
       .then(res => {
         console.log('countries', res.data.view.content.register.first.inputs.filter(el => el.title === 'Country')[0].values);
         setCountries(res.data.view.content.register.first.inputs.filter(el => el.title === 'Country')[0].values);
@@ -89,7 +89,7 @@ const UserDetailsView = () => {
         formData.append('addImage', image.data);
         console.log('formData', formData);
         axios
-          .post('http://localhost:9001/addImageToServer', formData, {
+          .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/addImageToServer', formData, {
             headers: {
               Authorization: Token,
             },
@@ -97,7 +97,7 @@ const UserDetailsView = () => {
           .then(res => {
             data.userSubmit.profilePic = res.data.url;
             axios
-              .put('http://localhost:9001/user/', data, {
+              .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/', data, {
                 headers: {
                   Authorization: Token,
                 },
@@ -117,7 +117,7 @@ const UserDetailsView = () => {
           });
       } else {
         axios
-          .put('http://localhost:9001/user/', data, {
+          .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/', data, {
             headers: {
               Authorization: Token,
             },

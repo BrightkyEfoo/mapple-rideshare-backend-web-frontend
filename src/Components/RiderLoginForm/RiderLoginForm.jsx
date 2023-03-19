@@ -68,7 +68,7 @@ const RiderLoginForm = () => {
   //   const location = useLocation();
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=${type}loginform&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=${type}loginform&language=EN`)
       .then(res => {
         setData(res.data.view);
       })
@@ -97,7 +97,7 @@ const RiderLoginForm = () => {
   const handleVerifyByName = name => {
     switch (name) {
       case 'userName':
-        return form.userName.length >= 5;
+        return form.userName.length >= 3;
       case 'firstName':
         return validateName(form.firstName);
       case 'lastName':
@@ -153,7 +153,7 @@ const RiderLoginForm = () => {
       ? 'reEmail'
       : el.title === 'Password'
       ? 'password'
-      : el.title === 'Password again'
+      : el.title === 'Retype password'
       ? 'rePassword'
       : el.title === 'First name'
       ? 'firstName'
@@ -162,7 +162,7 @@ const RiderLoginForm = () => {
   const handleSubmit1 = e => {
     if (isAllValid()) {
       axios
-        .post('http://localhost:9001/user', { ...form, accessLevel: type === 'driver' ? 1 : 0 })
+        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user', { ...form, accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);
@@ -201,7 +201,7 @@ const RiderLoginForm = () => {
     const token = 'Bearer ' + localStorage.getItem('token');
     axios
       .post(
-        'http://localhost:9001/user/verify-email',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/verify-email',
         { ...form },
         {
           headers: {
@@ -235,7 +235,7 @@ const RiderLoginForm = () => {
   const handleLogin1 = () => {
     if (validateEmail(form.email) && form.password.length >= 8) {
       axios
-        .post('http://localhost:9001/user/login', { email: form.email, password: form.password, accessLevel: type === 'driver' ? 1 : 0 })
+        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/login', { email: form.email, password: form.password, accessLevel: type === 'driver' ? 1 : 0 })
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);

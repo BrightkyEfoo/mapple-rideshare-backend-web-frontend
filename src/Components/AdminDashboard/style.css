@@ -7,7 +7,8 @@
   gap: 15px;
   padding: 8px 15px;
   transition: background-color ease 300ms;
-  /* cursor: pointer; */
+  cursor: pointer;
+  user-select: none;
 }
 
 .dashboard-side-bar-title-container {

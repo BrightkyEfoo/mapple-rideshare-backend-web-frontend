@@ -1,9 +1,8 @@
+export const ellipsis = (nb, str) => {
+  return str.length > nb ? str.slice(0, nb) + '...' : str;
+};
 
-export const ellipsis = (nb , str)=>{
-  return str.length > nb ? str.slice(0,nb)+'...' : str
-}
-
-export const validateEmail = (email) => {
+export const validateEmail = email => {
   return String(email)
     .toLowerCase()
     .match(
@@ -11,15 +10,9 @@ export const validateEmail = (email) => {
     );
 };
 
-export const validateName =(name)=>{
-  const regName = /^([a-zA-Z]{2}[a-zA-Z]+ )+$/;
-  // if(!regName.test(name)){
-  //     return false;
-  // }else{
-  //     return true;
-  // }
-  if(name.length > 3){
-    return true
+export const validateName = name => {
+  if (name.length >= 3) {
+    return true;
   }
-  return false
-}
+  return false;
+};

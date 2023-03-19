@@ -14,26 +14,18 @@ export default function PaymentInputs() {
   const user = JSON.parse(localStorage.getItem('user'));
   const BookRide = useSelector(state => state.BookRide);
   const [clientSecret, setClientSecret] = useState('');
-  const [once, setOnce] = useState(false);
-  const { wrapperProps, getCardImageProps, getCardNumberProps, getExpiryDateProps, getCVCProps } = usePaymentInputs();
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    if (!once) {
       axios
-        .get('http://localhost:9001/map/booking/payment?userId=' + user.id + '&id=' + BookRide.actualBooking.id, {
+        .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/payment?userId=' + user.id + '&id=' + BookRide.actualBooking.id, {
           headers: {
             Authorization: token,
           },
         })
         .then(res => {
           console.log('res.data', res.data);
-          setOnce(true);
           setClientSecret(res.data.client_secret);
         });
-      setOnce(true);
-    }
-
-    setOnce(true);
   }, []);
   const appearance = {
     theme: 'stripe',
@@ -44,17 +36,11 @@ export default function PaymentInputs() {
   };
   return (
     <div>
-      {/* <PaymentInputsWrapper {...wrapperProps}> */}
-      {/* <svg {...getCardImageProps({ images })} />
-      <input {...getCardNumberProps()} />
-      <input {...getExpiryDateProps()} />
-      <input {...getCVCProps()} /> */}
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm />
+          <CheckoutForm clientSecret={clientSecret}/>
         </Elements>
       )}
-      {/* </PaymentInputsWrapper> */}
     </div>
   );
 }

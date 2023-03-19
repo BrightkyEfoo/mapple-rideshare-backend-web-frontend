@@ -46,7 +46,7 @@ const SmallPayment = () => {
     setPosition(2);
   };
   // useEffect(() => {
-  //   axios.get('http://localhost:9001/secret').then(res => {
+  //   axios.get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/secret').then(res => {
   //     console.log('client_secret ', res.data);
   //     setClientSecret(res.data.client_secret);
   //   });
@@ -55,7 +55,7 @@ const SmallPayment = () => {
   const handlePay = e => {
     // axios
     //   .put(
-    //     'http://localhost:9001/map/booking/',
+    //     'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/',
     //     {
     //       userId: user.id,
     //       bookingId: bookRide.actualBooking.id,
@@ -76,7 +76,7 @@ const SmallPayment = () => {
     //   .catch(err => {
     //     console.log('err', err);
     //   });
-    // axios.get('http://localhost:9001/secret').then(res => {
+    // axios.get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/secret').then(res => {
     //   console.log('client_secret ', res.data);
     //   setClientSecret(res.data.client_secret);
     // setOptions({
@@ -92,7 +92,7 @@ const SmallPayment = () => {
   const paynow = token => {
     try {
       axios
-        .post('http://localhost:9001/payment', {
+        .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/payment', {
           amount: 1500,
           token,
         })
@@ -133,24 +133,6 @@ const SmallPayment = () => {
             />
           </div>
           <div className="small-payment-popup-sub-container-1">
-            {/* <StripeCheckout
-              name="Maple RideShare" // the pop-in header title
-              description="Ride anywhere!"
-              amount={15000} // cents
-              currency="USD"
-              stripeKey="pk_test_51MjU5YLDZa2YdiZt2YgpXKsjkAdZD92w1SuZnb3JGPfCMDanOZexRYuZwwNDRrK6Y3bk9ZbIV1GNqa7OnqfA1iBZ00RVMiDjiZ"
-              email="brightefoo@gmail.com"
-              // Note: Enabling either address option will give the user the ability to
-              // fill out both. Addresses are sent as a second parameter in the token callback.
-              shippingAddress
-              billingAddress
-              allowRememberMe // "Remember Me" option (default true)
-              token={paynow}
-            >
-              <button name="CC" onClick={handleChange1}>
-                Visa / Mastercard / AMEX
-              </button>
-            </StripeCheckout> */}
             <button name="CC" onClick={handleChange1} className='success'>
               Visa / Mastercard / AMEX
             </button>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { socket } from '../../Socket';
 import { DataGrid } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,14 +13,16 @@ const BookRiderHistoryDriver = () => {
   const token = 'Bearer ' + localStorage.getItem('token');
   const dispatch = useDispatch();
   const DriverBooking = useSelector(state => state.DriverBooking);
-  socket.on('new-booking', data => {
-    console.log('data', data);
-    dispatch(DriverBookingActions.setBooking(data.booking));
+  const [reload, setReload] = useState(false);
+  socket.on('notification', data => {
+    setReload(!reload);
+    // console.log('data', data);
+    // dispatch(DriverBookingActions.setBooking(data.booking));
   });
   const handleValidate = e => {
     axios
       .put(
-        'http://localhost:9001/map/booking',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
         {
           userId: user.id,
           bookingId: DriverBooking.newBooking.id,
@@ -44,7 +46,7 @@ const BookRiderHistoryDriver = () => {
     // to do fetch new book
     axios
       .post(
-        'http://localhost:9001/user/pending?userId=' + user.id,
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/pending?userId=' + user.id,
         {},
         {
           headers: {
@@ -59,11 +61,11 @@ const BookRiderHistoryDriver = () => {
       .catch(err => {
         console.log('err', err);
       });
-  }, []);
+  }, [reload]);
   const handleStart = e => {
     axios
       .put(
-        'http://localhost:9001/map/booking',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
         {
           userId: user.id,
           bookingId: DriverBooking.newBooking.id,
@@ -83,10 +85,60 @@ const BookRiderHistoryDriver = () => {
         console.log('err', err);
       });
   };
+
+  const handlePause = e => {
+    axios
+      .put(
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
+        {
+          userId: user.id,
+          bookingId: DriverBooking.newBooking.id,
+          state: 4,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then(res => {
+        console.log('res.data booking started', res.data);
+        dispatch(DriverBookingActions.setBooking(res.data.booking));
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
+  };
+
+
+  const handleContinue = e => {
+    axios
+      .put(
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
+        {
+          userId: user.id,
+          bookingId: DriverBooking.newBooking.id,
+          state: 2,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then(res => {
+        console.log('res.data booking started', res.data);
+        dispatch(DriverBookingActions.setBooking(res.data.booking));
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
+  };
+
   const handleEnd = e => {
     axios
       .post(
-        'http://localhost:9001/map/booking/confirm',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/confirm',
         {
           userId: user.id,
           bookingId: DriverBooking.newBooking.id,
@@ -132,6 +184,16 @@ const BookRiderHistoryDriver = () => {
                 </button>
               )}
               {DriverBooking.newBooking.state === 2 && !DriverBooking.newBooking.driverConfirm && (
+                <button className="btn-success-secondary" onClick={handlePause}>
+                  Pause
+                </button>
+              )}
+              {DriverBooking.newBooking.state === 4 && !DriverBooking.newBooking.driverConfirm && (
+                <button className="btn-success-secondary" onClick={handleContinue}>
+                  Continue
+                </button>
+              )}
+              {(DriverBooking.newBooking.state === 2 || DriverBooking.newBooking.state === 4) && !DriverBooking.newBooking.driverConfirm && (
                 <button className="btn-success" onClick={handleEnd}>
                   End
                 </button>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import UserDetailsView from './UserDetailsView';
 import OrderHistoryView from './OrderHistoryView';
@@ -7,6 +7,8 @@ import NotificationsView from './NotificationsView';
 
 const MainDashboard = () => {
   const NavBarState = useSelector(state => state.NavBar);
+  // useEffect(() => {}, [reload]);
+
   switch (NavBarState.selected) {
     case 1:
       return <OrderHistoryView />;

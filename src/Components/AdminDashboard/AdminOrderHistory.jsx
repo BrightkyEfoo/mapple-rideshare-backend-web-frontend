@@ -18,7 +18,7 @@ const AdminOrderHistory = () => {
       setInterval(() => {
         console.log('myInter', myInter);
         axios
-          .get('http://localhost:9001/user/ride', {
+          .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/ride', {
             headers: {
               Authorization: token,
             },
@@ -37,7 +37,7 @@ const AdminOrderHistory = () => {
     );
     console.log('myInter', myInter);
     axios
-      .get('http://localhost:9001/user/ride', {
+      .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/ride', {
         headers: {
           Authorization: token,
         },
@@ -125,7 +125,7 @@ const AdminOrderHistory = () => {
                 setCanReload(true);
               }, 60000);
               axios
-                .get('http://localhost:9001/user/ride', {
+                .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/ride', {
                   headers: {
                     Authorization: token,
                   },

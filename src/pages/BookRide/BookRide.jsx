@@ -28,7 +28,7 @@ const BookRide = () => {
   });
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=bookride&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=bookride&language=EN`)
       .then(res => {
         setData(res.data.view.content);
       })

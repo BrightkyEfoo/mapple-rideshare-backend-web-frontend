@@ -41,7 +41,7 @@ const UserCreateForm = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=createuserform&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=createuserform&language=EN`)
       .then(res => {
         setData(res.data.view);
       })
@@ -82,7 +82,7 @@ const UserCreateForm = () => {
       if (!user?.id) {
         axios
           .post(
-            'http://localhost:9001/user/admin',
+            'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/admin',
             { userId: User?.id, submission: form },
             {
               headers: {
@@ -111,7 +111,7 @@ const UserCreateForm = () => {
           }
         });
         axios
-          .put('http://localhost:9001/user/admin', data, {
+          .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/admin', data, {
             headers: {
               Authorization: Token,
             },

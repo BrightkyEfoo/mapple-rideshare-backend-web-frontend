@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
-  content: '',
+  contents: [{ value: '', status: '', severity: 'info' }],
   isVisible: false,
   actions: null,
-  onClose: null,
+  onClose: '',
   notifications: null,
   data: null,
   Rate: {
@@ -17,9 +17,25 @@ const NotificationSlice = createSlice({
   initialState,
   reducers: {
     setContent: (state, data) => {
-      state.content = data.payload;
+      state.contents = data.payload;
+    },
+    addContent: (state, data) => {
+      let prev = [...state.contents];
+      prev = prev.filter(el => el.value !== '');
+      if (!prev.filter(el => el.value === data.payload.value)[0]) {
+        prev.push(data.payload);
+        state.contents = prev;
+      }
+    },
+    removeContent: (state, data) => {
+      let prev = [...state.contents];
+      prev = prev.filter(el => el.value !== data.payload.value);
+      state.contents = prev;
     },
     setIsVisible: (state, data) => {
+      if (!data.payload) {
+        state.contents = [{ value: '', status: '', severity: 'info' }];
+      }
       state.isVisible = data.payload;
     },
     setRate: (state, data) => {
@@ -33,15 +49,22 @@ const NotificationSlice = createSlice({
     },
 
     setOnClose: (state, data) => {
-      state.actions = data.payload;
+      state.onClose = data.payload;
     },
-    clear: state => {
-      state.actions = null;
-      state.content = '';
-      state.isVisible = false;
-    },
+    // clear: state => {
+    //   state.actions = null;
+    //   state.content = '';
+    //   state.isVisible = false;
+    // },
     setNotifications: (state, data) => {
       state.notifications = data.payload;
+    },
+    addNotification: (state, data) => {
+      if (!state.notifications.filter(el => el.id === data.payload.id)[0]) {
+        let prev = state.notifications;
+        prev.push(data.payload);
+        state.notifications = prev;
+      }
     },
   },
 });

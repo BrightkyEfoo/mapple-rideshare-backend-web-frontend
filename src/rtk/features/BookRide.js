@@ -20,8 +20,8 @@ const initialState = {
   },
   startLongName: '',
   centerCoord: {
-    lat: 45.396,
-    lng: -75.7,
+    lat: 43.68837197070847,
+    lng: -79.41789210062221,
   },
   selectedDriver: null,
   isDriversVisible: false,

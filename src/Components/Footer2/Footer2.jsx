@@ -12,7 +12,7 @@ const Footer2 = () => {
   // const dispatch()
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=footer2&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=footer2&language=EN`)
       .then(res => {
         setData(res.data.view.content);
         // console.log(res.data)

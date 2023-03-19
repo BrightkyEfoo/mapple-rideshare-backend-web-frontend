@@ -34,7 +34,7 @@ const SideBarBookRide = ({ data }) => {
 
   const handleClick1 = e => {
     axios
-      .get('http://localhost:9001/map/drivers', {
+      .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/drivers', {
         params: {
           start: bookRide.route.start,
           end: bookRide.route.end,
@@ -62,7 +62,7 @@ const SideBarBookRide = ({ data }) => {
     // here we should create the bpooking
     axios
       .post(
-        'http://localhost:9001/map/booking',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
         {
           DriverId: driver.id,
           RiderId: user.id,
@@ -92,10 +92,10 @@ const SideBarBookRide = ({ data }) => {
   const handleClick3 = (e, i) => {
     if (i === 0) {
       dispatch(BookRideActions.goForward());
-      // axios.put('http://localhost:9001/map/booking',{state : 1})
+      // axios.put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',{state : 1})
     } else {
       axios
-        .delete('http://localhost:9001/map/booking/' + bookRide.actualBooking.id, {
+        .delete('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/' + bookRide.actualBooking.id, {
           headers: {
             Authorization: token,
           },
@@ -119,7 +119,7 @@ const SideBarBookRide = ({ data }) => {
   const handleClick4 = e => {
     axios
       .put(
-        'http://localhost:9001/map/booking',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking',
         { state: 2, userId: user.id },
         {
           headers: {
@@ -154,21 +154,21 @@ const SideBarBookRide = ({ data }) => {
                 <div
                   key={i}
                   onClick={() => {
-                    if (i === 0) {
-                      navigator.geolocation.getCurrentPosition(
-                        position => {
-                          console.log('position', position);
-                          const lat = position.coords.latitude;
-                          const lng = position.coords.longitude;
-                          dispatch(BookRideActions.setRoute({ ...bookRide.route, start: `${lat.toFixed(2)} , ${lng.toFixed(2)}` }));
+                    // if (i === 0) {
+                    //   navigator.geolocation.getCurrentPosition(
+                    //     position => {
+                    //       console.log('position', position);
+                    //       const lat = position.coords.latitude;
+                    //       const lng = position.coords.longitude;
+                    //       dispatch(BookRideActions.setRoute({ ...bookRide.route, start: `${lat.toFixed(2)} , ${lng.toFixed(2)}` }));
 
-                          dispatch(BookRideActions.setStartCoord({ lat, lng }));
-                        },
-                        err => {
-                          console.log('err', err);
-                        }
-                      );
-                    }
+                    //       dispatch(BookRideActions.setStartCoord({ lat, lng }));
+                    //     },
+                    //     err => {
+                    //       console.log('err', err);
+                    //     }
+                    //   );
+                    // }
                   }}
                 >
                   <label>{el.label}</label>

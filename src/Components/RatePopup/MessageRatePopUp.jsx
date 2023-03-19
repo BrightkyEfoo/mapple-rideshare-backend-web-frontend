@@ -20,7 +20,7 @@ const MessageRatePopUp = () => {
   const handleSubmit = e => {
     axios
       .post(
-        'http://localhost:9001/user/booking/rates/',
+        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/booking/rates/',
         {
           bookingId: rateNotif.bookingId,
           userId: user.id,

@@ -8,6 +8,7 @@ import { GrOverview } from 'react-icons/gr';
 import { useMediaQuery } from 'react-responsive';
 import { socket } from '../../Socket';
 import { NavBarActions } from '../../rtk/features/NavBarSlice';
+import { NotificationActions } from '../../rtk/features/Notificarion';
 
 const OrderHistoryView = () => {
   const token = 'Bearer ' + localStorage.getItem('token');
@@ -15,28 +16,16 @@ const OrderHistoryView = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
   const isTablet = useMediaQuery({ query: '(max-width: 920px)' });
   const isSmallTablet = useMediaQuery({ query: '(max-width: 730px)' });
-  const reload = useSelector(state => state.NavBar.relaod)
+  const [reload, setReload] = useState(false);
   const dispatch = useDispatch();
   const history = useSelector(state => state.BookRide.history);
-
-  // const [reload, setReload] = useState(true);
-  socket.on('validated', data => {
-    dispatch(NavBarActions.reload())
-    
-    console.log('data', data);
+  socket.on('notification', data => {
+    console.log('order history reloaded on notification');
+    setReload(!reload);
   });
-  socket.on('started', data => {
-    dispatch(NavBarActions.reload())
-    console.log('data', data);
-  });
-  socket.on('confirmed', data => {
-    dispatch(NavBarActions.reload())
-    console.log('data', data);
-  });
-  //   const [history, setHistory] = useState(null);
   useEffect(() => {
     axios
-      .get('http://localhost:9001/user/bookride', {
+      .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/bookride', {
         headers: {
           Authorization: token,
         },
@@ -45,7 +34,7 @@ const OrderHistoryView = () => {
         },
       })
       .then(res => {
-        dispatch(BookRideActions.setHistory(res.data.history));
+        dispatch(BookRideActions.setHistory(res.data.history.reverse()));
         console.log('res.data', res.data);
       })
       .catch(err => {
@@ -101,7 +90,9 @@ const OrderHistoryView = () => {
                   : params.row.state === 2
                   ? 'started'
                   : params.row.state === 3
-                  ? 'confirmed '
+                  ? 'ended '
+                  : params.row.state === 4
+                  ? 'paused '
                   : 'not paid'}
               </div>
             );
@@ -129,39 +120,42 @@ const OrderHistoryView = () => {
           headerName: 'actions',
           width: 150,
           renderCell: params => {
-            // console.log('params', params)
+            console.log('params', params.row)
             return (
-              params.row.state === 2 &&
-              params.row.driverConfirm && (
+              params.row.state === 3 && !params.row.riderConfirm && (
                 <div>
-                  <button
-                  className='btn-primary-success'
-                    onClick={() => {
-                      axios
-                        .post(
-                          'http://localhost:9001/map/booking/confirm',
-                          {
-                            userId: user.id,
-                            bookingId: params.id,
-                          },
-                          {
-                            headers: {
-                              Authorization: token,
+                  <p>Is this ride ended</p>
+                  <div>
+                    <button
+                      className="btn-primary-success"
+                      onClick={() => {
+                        axios
+                          .post(
+                            'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/confirm',
+                            {
+                              userId: user.id,
+                              bookingId: params.id,
                             },
-                          }
-                        )
-                        .then(res => {
-                          dispatch(NavBarActions.reload())
-                          console.log('res.data', res.data);
-                        })
-                        .catch(err => {
-                          console.log('err', err);
-                        });
-                    }}
-                  >
-                    Yes
-                  </button>
-                  <button className='btn-primary-error'>No</button>
+                            {
+                              headers: {
+                                Authorization: token,
+                              },
+                            }
+                          )
+                          .then(res => {
+                            dispatch(NavBarActions.reload());
+                            dispatch(NotificationActions.setRate({ isVisible: true, bookingId: params.row?.id }));
+                            console.log('res.data', res.data);
+                          })
+                          .catch(err => {
+                            console.log('err', err);
+                          });
+                      }}
+                    >
+                      Yes
+                    </button>
+                    <button className="btn-primary-error">No</button>
+                  </div>
                 </div>
               )
             );
@@ -217,7 +211,9 @@ const OrderHistoryView = () => {
                   : params.row.state === 2
                   ? 'started'
                   : params.row.state === 3
-                  ? 'confirmed '
+                  ? 'ended '
+                  : params.row.state === 4
+                  ? 'paused '
                   : 'not paid'}
               </div>
             );
@@ -228,7 +224,7 @@ const OrderHistoryView = () => {
           headerName: 'price',
           width: 80,
           renderCell: params => {
-            return <div>{params.row.price}</div>;
+            return <div>{params.row.price-3}</div>;
           },
         },
         {

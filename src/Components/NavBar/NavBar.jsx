@@ -32,7 +32,7 @@ const NavBar = () => {
   useEffect(() => {
     if (user) {
       axios
-        .get('http://localhost:9001/user/notification?userId=' + user.id, {
+        .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/notification?userId=' + user.id, {
           headers: {
             Authorization: token,
           },
@@ -49,7 +49,7 @@ const NavBar = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9001/front-end/?name=navbar&language=EN`)
+      .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=navbar&language=EN`)
       .then(res => {
         setData(res.data.view);
       })
@@ -76,12 +76,12 @@ const NavBar = () => {
     }
   };
   const handleClick2 = e => {
-    if (user && user.id) {
-      navigate('/dashboard');
-    } else {
-      dispatch(RiderLoginFormActions.setType('driver'));
-      dispatch(RiderLoginFormActions.setIsVisible(true));
-    }
+    // if (user && user.id) {
+    //   navigate('/dashboard');
+    // } else {
+    //   dispatch(RiderLoginFormActions.setType('driver'));
+    //   dispatch(RiderLoginFormActions.setIsVisible(true));
+    // }
   };
 
   const handleClick3 = e => {
@@ -148,7 +148,7 @@ const NavBar = () => {
                 onClick={() => {
                   // axios
                   //   .put(
-                  //     'http://localhost:9001/user/notification',
+                  //     'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/notification',
                   //     {
                   //       userId: user.id,
                   //     },

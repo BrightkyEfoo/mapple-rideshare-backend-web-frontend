@@ -1,5 +1,10 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from 'react-router-dom';
 import HomePage from './pages/HomePage/HomePage';
 import { useDispatch, useSelector } from 'react-redux';
 import RiderLoginFormContainer from './Components/RiderLoginForm/RiderLoginFormContainer';
@@ -16,6 +21,7 @@ import SmallNotif from './Components/notification/SmallNotif';
 import { NotificationActions } from './rtk/features/Notificarion';
 import axios from 'axios';
 import MessageRatePopUp from './Components/RatePopup/MessageRatePopUp';
+import { NavBarActions } from './rtk/features/NavBarSlice';
 
 function App() {
   const token = 'Bearer ' + localStorage.getItem('token');
@@ -35,65 +41,9 @@ function App() {
   const isSmallRateVisible = useSelector(
     state => state.Notification.Rate.isVisible
   );
+  const notifications = useSelector(state => state.Notification.contents);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  socket.on('new-booking', data => {
-    console.log('data new-booking socket', data);
-    dispatch(NotificationActions.setNotifications(data.notifications));
-
-    dispatch(NotificationActions.setContent('A new ride for you'));
-    dispatch(NotificationActions.setIsVisible(true));
-  });
-
-  socket.on('validated', data => {
-    console.log('data validated socket', data);
-    dispatch(NotificationActions.setNotifications(data.notifications));
-
-    dispatch(
-      NotificationActions.setContent(
-        'your booking has been validated by the driver, He will be there after 10min'
-      )
-    );
-    dispatch(NotificationActions.setIsVisible(true));
-  });
-  socket.on('started', data => {
-    dispatch(NotificationActions.setNotifications(data.notifications));
-    dispatch(
-      NotificationActions.setContent('your booking has been started now!')
-    );
-    dispatch(NotificationActions.setIsVisible(true));
-  });
-
-  socket.on('confirmed', data => {
-    if (data.state === 2) {
-      dispatch(
-        NotificationActions.setContent(
-          'Your driver has confirmed that the ride had been ended. do you confirm ?'
-        )
-      );
-      dispatch(NotificationActions.setNotifications(data.notifications));
-      dispatch(NotificationActions.setData(data));
-      dispatch(
-        NotificationActions.setActions([
-          {
-            id: 1,
-            content: 'Yes',
-          },
-          {
-            id: 2,
-            content: 'No',
-          },
-        ])
-      );
-    } else if (data.state === 3) {
-      // dispatch(NotificationActions.setOnClose(()=>{
-      //   dispatch(NotificationActions.setRate(true))
-      // }))
-      dispatch(NotificationActions.setContent('Your ride is at end'));
-    }
-    dispatch(NotificationActions.setIsVisible(true));
-  });
-
   useEffect(() => {
     socket.connect();
     if (user) {
@@ -108,29 +58,45 @@ function App() {
     };
   }, []);
 
+  socket.on('notification', data => {
+    console.log('socket', data);
+    // dispatch(NavBarActions.reload());
+    if (data.route) {
+      navigate(data.route);
+    }
+    if (data.pop_up?.display) {
+      // dispatch(NotificationActions.clear());
+      dispatch(NotificationActions.addContent({ ...data.pop_up }));
+      dispatch(NotificationActions.setIsVisible(true));
+    }
+    if (data.notification) {
+      dispatch(NotificationActions.addNotification(data.notification));
+    }
+  });
+
   return (
     <div className="App">
-      <Router>
-        {isPaymentDisplay && <SmallPayment />}
-        {isVisibleRiderLoginForm && <RiderLoginFormContainer />}
-        {isVisibleUserCreateOrEdit && <UserCreateForm />}
-        {isSmallNotifVisible && <SmallNotif />}
-        {isSmallRateVisible && <MessageRatePopUp />}
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          {/* <Route path="/events" element={<EventsPage />} />
+      {/* <Router> */}
+      {isPaymentDisplay && <SmallPayment />}
+      {isVisibleRiderLoginForm && <RiderLoginFormContainer />}
+      {isVisibleUserCreateOrEdit && <UserCreateForm />}
+      {isSmallNotifVisible && <SmallNotif />}
+      {isSmallRateVisible && <MessageRatePopUp />}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        {/* <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:eventId" element={<SingleEventPage />} />
           <Route path="/about" element={<AboutPage />} />
         <Route path="/login" element={<Login />} /> */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/maple-ride-admin" element={<AdminLogin />} />
-          <Route
-            path="/maple-ride-admin/dashboard"
-            element={<AdminDashboard />}
-          />
-          <Route path="/book-ride" element={<BookRide />} />
-        </Routes>
-      </Router>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/maple-ride-admin" element={<AdminLogin />} />
+        <Route
+          path="/maple-ride-admin/dashboard"
+          element={<AdminDashboard />}
+        />
+        <Route path="/book-ride" element={<BookRide />} />
+      </Routes>
+      {/* </Router> */}
     </div>
   );
 }

@@ -12,7 +12,7 @@ const NotificationsView = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     axios
-      .get('http://localhost:9001/user/notification?userId=' + user.id, {
+      .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/notification?userId=' + user.id, {
         headers: {
           Authorization: token,
         },
@@ -27,7 +27,7 @@ const NotificationsView = () => {
     return () => {
       axios
         .put(
-          'http://localhost:9001/user/notification',
+          'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/notification',
           {
             userId: user.id,
           },
@@ -49,8 +49,8 @@ const NotificationsView = () => {
 
   return (
     notifications && (
-      <div>
-        {notifications.map((el, i) => {
+      <div className='notifications-big-container'>
+        {[...notifications].reverse().map((el, i) => {
           return <NotificationCard key={i} text={el.content} viewed={el.viewed} />;
         })}
       </div>

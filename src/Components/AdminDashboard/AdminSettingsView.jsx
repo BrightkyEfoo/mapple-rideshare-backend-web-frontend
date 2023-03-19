@@ -16,7 +16,7 @@ const AdminSettingsView = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     axios
-      .get('http://localhost:9001/user?userId=' + User.id, {
+      .get('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user?userId=' + User.id, {
         headers: {
           Authorization: Token,
         },
@@ -58,7 +58,7 @@ const AdminSettingsView = () => {
                   onClick={e => {
                     console.log('params', params);
                     axios
-                      .delete('http://localhost:9001/user/admin?id=' + params.row.id, {
+                      .delete('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/admin?id=' + params.row.id, {
                         headers: {
                           Authorization: Token,
                         },
@@ -83,7 +83,7 @@ const AdminSettingsView = () => {
             <div
               onClick={e => {
                 axios
-                  .put('http://localhost:9001/user/subadmin', { allowed: !params.row.allowed , userId : User.id , id:parseInt(params.row.id)} , {
+                  .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/subadmin', { allowed: !params.row.allowed , userId : User.id , id:parseInt(params.row.id)} , {
                     headers : {
                       Authorization : Token
                     }

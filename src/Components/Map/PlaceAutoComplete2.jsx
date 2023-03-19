@@ -11,33 +11,48 @@ const PlaceAutoComplete2 = ({ point, placeholder }) => {
   const BookRide = useSelector(state => state.BookRide);
   const handleChange = value => {
     setAddress(value);
-    setInputValue(value);
-    // inputRef.current.value = value
+    // setInputValue(value);
+    if (value === '') {
+      if (point === 'start') {
+        dispatch(BookRideActions.setRoute({ ...BookRide.route, start: '' }));
+        dispatch(BookRideActions.setStartCoord({ lat: 0, lng: 0 }));
+      } else if (point === 'end') {
+        dispatch(BookRideActions.setEndCoord({ lat: 0, lng: 0 }));
+        dispatch(BookRideActions.setRoute({ ...BookRide.route, end: '' }));
+      }
+    }
   };
   const handleSelect = value => {
     setAddress(value);
-    geocodeByAddress(value)
-      .then(async results => {
-        // console.log('results', results);
-        setInputValue(value);
-        if (point === 'start') {
-          dispatch(BookRideActions.setRoute({ ...BookRide.route, start: results[0].formatted_address }));
-        } else if (point === 'end') {
-          dispatch(BookRideActions.setRoute({ ...BookRide.route, end: results[0].formatted_address }));
-        }
-        const latLng = await getLatLng(results[0]);
-        // console.log('latLng', latLng);
-        // console.log('latLng', latLng);
-        const { lat, lng } = latLng;
-        if (point === 'start') {
-          dispatch(BookRideActions.setStartCoord({ lat, lng }));
-          // dispatch(BookRideActions.setRoute({ ...BookRide.route, start: suggestion.structured_formatting.main_text }));
-        } else if (point === 'end') {
-          // dispatch(BookRideActions.setRoute({ ...BookRide.route, end: suggestion.structured_formatting.main_text }));
-          dispatch(BookRideActions.setEndCoord({ lat, lng }));
-        }
-      })
-      .catch(error => console.error('Error', error));
+    // if (value === '') {
+    //   if (point === 'start') {
+    //     dispatch(BookRideActions.setRoute({ ...BookRide.route, start: '' }));
+    //     dispatch(BookRideActions.setStartCoord({ lat: 0, lng: 0 }));
+    //   } else if (point === 'end') {
+    //     dispatch(BookRideActions.setEndCoord({ lat: 0, lng: 0 }));
+    //     dispatch(BookRideActions.setRoute({ ...BookRide.route, end: '' }));
+    //   }
+    // } else {
+      geocodeByAddress(value)
+        .then(async results => {
+          setInputValue(value);
+          if (point === 'start') {
+            dispatch(BookRideActions.setRoute({ ...BookRide.route, start: results[0].formatted_address }));
+          } else if (point === 'end') {
+            dispatch(BookRideActions.setRoute({ ...BookRide.route, end: results[0].formatted_address }));
+          }
+          const latLng = await getLatLng(results[0]).catch(err => {
+            console.log('err', err);
+          });
+          const { lat, lng } = latLng;
+          if (point === 'start') {
+            dispatch(BookRideActions.setStartCoord({ lat, lng }));
+          } else if (point === 'end') {
+            dispatch(BookRideActions.setEndCoord({ lat, lng }));
+          }
+        })
+        .catch(error => console.log('Error', error));
+    // }
   };
   return (
     <div className="autocomplete-super-container">
