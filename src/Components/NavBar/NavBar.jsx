@@ -76,17 +76,19 @@ const NavBar = () => {
     }
   };
   const handleClick2 = e => {
-    // if (user && user.id) {
-    //   navigate('/dashboard');
-    // } else {
-    //   dispatch(RiderLoginFormActions.setType('driver'));
-    //   dispatch(RiderLoginFormActions.setIsVisible(true));
-    // }
+    if (user && user.id) {
+      navigate('/dashboard');
+    } else {
+      dispatch(RiderLoginFormActions.setType('driver'));
+      dispatch(RiderLoginFormActions.setIsVisible(true));
+    }
   };
 
   const handleClick3 = e => {
-    if (user && user.id) {
-      navigate('/maple-ride-admin/dashboard');
+    if (user && user.id && user.accessLevel === 3) {
+      navigate('/Board_@MRS0223/dashboard');
+    } else if (user && user.id && user.accessLevel === 2) {
+      navigate('/Dash_MRS0223/dashboard');
     }
   };
   return data ? (
@@ -146,24 +148,11 @@ const NavBar = () => {
                 color="action"
                 size={20}
                 onClick={() => {
-                  // axios
-                  //   .put(
-                  //     'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/notification',
-                  //     {
-                  //       userId: user.id,
-                  //     },
-                  //     {
-                  //       headers: {
-                  //         Authorization: token,
-                  //       },
-                  //     }
-                  //   )
-                  //   .then(res => {
-                  //     console.log('res.json', res.data);
-                  //   }).catch(err => {
-                  //     console.log('err', err)
-                  //   })
-                  navigate('/dashboard');
+                  if (user.accessLevel < 2) {
+                    navigate('/dashboard');
+                  } else {
+                    navigate('/Board_@ADN0223/dashboard');
+                  }
                   dispatch(NavBarActions.setSelected(7));
                 }}
               />

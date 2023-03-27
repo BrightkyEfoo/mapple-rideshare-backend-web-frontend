@@ -10,6 +10,10 @@ const initialState = {
     isVisible: false,
     bookingId: null,
   },
+  sound: {
+    source: '',
+    // is
+  },
 };
 
 const NotificationSlice = createSlice({
@@ -26,6 +30,9 @@ const NotificationSlice = createSlice({
         prev.push(data.payload);
         state.contents = prev;
       }
+    },
+    setSoundSource: (state, data) => {
+      state.sound.source = data.payload;
     },
     removeContent: (state, data) => {
       let prev = [...state.contents];
@@ -60,8 +67,15 @@ const NotificationSlice = createSlice({
       state.notifications = data.payload;
     },
     addNotification: (state, data) => {
-      if (!state.notifications.filter(el => el.id === data.payload.id)[0]) {
+      if (
+        !state.notifications ||
+        !state.notifications.filter(el => el.id === data.payload.id)[0]
+      ) {
         let prev = state.notifications;
+        if (!state.notifications) {
+          state.notifications = [];
+          prev = [];
+        }
         prev.push(data.payload);
         state.notifications = prev;
       }

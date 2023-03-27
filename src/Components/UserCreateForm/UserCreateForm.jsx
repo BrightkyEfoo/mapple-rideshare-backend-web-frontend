@@ -94,7 +94,7 @@ const UserCreateForm = () => {
             console.log('res.data', res.data);
             dispatch(UserCreateOrEditActions.setIsVisible(false));
             dispatch(userListActions.reload());
-            // navigate('/maple-ride-admin/dashboard');
+            // navigate('/Board_@ADN0223/dashboard');
           })
           .catch(err => {
             console.log('err', err);

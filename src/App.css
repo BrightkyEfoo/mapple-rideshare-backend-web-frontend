@@ -60,3 +60,8 @@
   border-radius: 5px;
   border: none;
 }
+
+
+.display-none{
+  display: none;
+}

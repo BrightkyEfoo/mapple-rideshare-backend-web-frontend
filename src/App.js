@@ -16,7 +16,7 @@ import BookRide from './pages/BookRide/BookRide';
 import AboutPage from './pages/About/AboutPage';
 import SmallPayment from './Components/SmallPayment/SmallPayment';
 import { socket } from './Socket';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import SmallNotif from './Components/notification/SmallNotif';
 import { NotificationActions } from './rtk/features/Notificarion';
 import axios from 'axios';
@@ -41,13 +41,15 @@ function App() {
   const isSmallRateVisible = useSelector(
     state => state.Notification.Rate.isVisible
   );
+  const audioNotificationRef = useRef();
+  const source = useSelector(state => state.Notification.sound.source);
   const notifications = useSelector(state => state.Notification.contents);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     socket.connect();
     if (user) {
-      socket.emit('login', { userId: user.id });
+      socket.emit('login', { userId: user.id , accessLevel : user.accessLevel});
     }
     return () => {
       if (user) {
@@ -61,6 +63,10 @@ function App() {
   socket.on('notification', data => {
     console.log('socket', data);
     // dispatch(NavBarActions.reload());
+    dispatch(NotificationActions.setSoundSource('notif1.wav'));
+    // audioNotificationRef.current.pause();
+    audioNotificationRef.current.load();
+    audioNotificationRef.current.play();
     if (data.route) {
       navigate(data.route);
     }
@@ -77,6 +83,7 @@ function App() {
   return (
     <div className="App">
       {/* <Router> */}
+
       {isPaymentDisplay && <SmallPayment />}
       {isVisibleRiderLoginForm && <RiderLoginFormContainer />}
       {isVisibleUserCreateOrEdit && <UserCreateForm />}
@@ -89,14 +96,18 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
         <Route path="/login" element={<Login />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/maple-ride-admin" element={<AdminLogin />} />
-        <Route
-          path="/maple-ride-admin/dashboard"
-          element={<AdminDashboard />}
-        />
+        <Route path="/Board_@MRS0223" element={<AdminLogin type='admin'/>} />
+        <Route path="/Dash_MRS0223" element={<AdminLogin type='subadmin'/>} />
+        <Route path="/Board_@MRS0223/dashboard" element={<AdminDashboard type='admin'/>} />
+        <Route path="/Dash_MRS0223/dashboard" element={<AdminDashboard type='subadmin'/>} />
         <Route path="/book-ride" element={<BookRide />} />
       </Routes>
       {/* </Router> */}
+
+      {/* les differents lecteurs */}
+      <audio className="display-none" ref={audioNotificationRef}>
+        <source src={source} />
+      </audio>
     </div>
   );
 }

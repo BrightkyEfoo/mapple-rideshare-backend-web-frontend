@@ -33,14 +33,19 @@ const AdminSettingsView = () => {
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'userName', headerName: 'username', width: 150 },
     { field: 'email', headerName: 'email', width: 200 },
-    { field: 'firstName', headerName: 'firstname', width: 100 },
-    { field: 'lastName', headerName: 'lastname', width: 100 },
-    { field: 'sex', headerName: 'sex', width: 50 },
-    { field: 'phone', headerName: 'phone', width: 130 },
+    {
+      field: 'date',
+      headerName: 'date of creation',
+      width: 150,
+      renderCell: params => {
+        let date = new Date(params.row.updatedAt);
+        return <div>{date.toLocaleString()}</div>;
+      },
+    },
     {
       field: 'actions',
       headerName: 'actions',
-      width: 250,
+      width: 120,
       renderCell: params => {
         return (
           <div className="admin-settings-view-actions-buttons">
@@ -80,31 +85,72 @@ const AdminSettingsView = () => {
                 </button>
               </>
             )}
-            <div
-              onClick={e => {
-                axios
-                  .put('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/subadmin', { allowed: !params.row.allowed , userId : User.id , id:parseInt(params.row.id)} , {
-                    headers : {
-                      Authorization : Token
-                    }
-                  })
-                  .then(res => {
-                    console.log('res.data', res.data);
-                    dispatch(UserCreateOrEditActions.setIsVisible(false));
-                    dispatch(userListActions.reload());
-                  })
-                  .catch(err => {
-                    console.log('err', err);
-                  });
-              }}
-            >
-              {/*il y a un truc a faire ici*/}
-              {params.row.allowed ? (
-                // <AiFillLock title={'lock the user ' + params.row.userName} size={20} color="#3b3b3b" />
-                <p title={'lock the user ' + params.row.userName}>desactivate</p>
-              ) : (
-                // <AiFillUnlock title={'unlock the user ' + params.row.userName} size={20} color="#3b3b3b" />
-                <p title={'unlock the user ' + params.row.userName} >activate</p>
+          </div>
+        );
+      },
+    },
+    {
+      field: 'status',
+      headerName: 'status',
+      width: 120,
+      renderCell: params => {
+        return (
+          <div className="admin-settings-view-actions-buttons">
+            <div>
+              <div
+                onClick={e => {
+                  axios
+                    .put(
+                      'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/subadmin',
+                      { allowed: !params.row.allowed, userId: User.id, id: parseInt(params.row.id) },
+                      {
+                        headers: {
+                          Authorization: Token,
+                        },
+                      }
+                    )
+                    .then(res => {
+                      console.log('res.data', res.data);
+                      dispatch(UserCreateOrEditActions.setIsVisible(false));
+                      dispatch(userListActions.reload());
+                    })
+                    .catch(err => {
+                      console.log('err', err);
+                    });
+                }}
+              >
+                {/*il y a un truc a faire ici*/}
+                {params.row.allowed ? (
+                  <p title={'lock the user ' + params.row.userName}>desactivate</p>
+                ) : (
+                  <p title={'unlock the user ' + params.row.userName}>activate</p>
+                )}
+              </div>
+              {!params.row.validated && (
+                <div
+                  onClick={e => {
+                    axios
+                      .put(
+                        'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/user/subadmin',
+                        { validated: !params.row.validated, userId: User.id, id: parseInt(params.row.id) },
+                        {
+                          headers: {
+                            Authorization: Token,
+                          },
+                        }
+                      )
+                      .then(res => {
+                        console.log('res.data', res.data);
+                        dispatch(UserCreateOrEditActions.setIsVisible(false));
+                        dispatch(userListActions.reload());
+                      })
+                      .catch(err => {
+                        console.log('err', err);
+                      });
+                  }}
+                >
+                  <p title={'validate ' + params.row.userName}>validate</p>
+                </div>
               )}
             </div>
           </div>
@@ -120,8 +166,9 @@ const AdminSettingsView = () => {
           <DataGrid
             rows={users}
             columns={columns}
-            pageSize={8}
-            rowsPerPageOptions={[5]}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            pageSizeOptions={[10]}
             // checkboxSelection
             style={{ textJustify: 'left', minHeight: 500 }}
           />

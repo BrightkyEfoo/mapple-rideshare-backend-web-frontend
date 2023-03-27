@@ -20,3 +20,27 @@
   flex-direction: column;
   align-items: stretch;
 }
+
+.notification-footer-page-select-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 15px;
+}
+
+.actual-page-notification,
+.page-notification {
+  background-color: #fff;
+  border: none;
+  /* font-weight:; */
+  aspect-ratio: 1/1;
+  border: 1px solid rgba(128, 128, 128, 0.382);
+  height: 25px;
+  padding: 5px;
+}
+
+.actual-page-notification {
+  background-color: var(--primary-red);
+  color: white;
+  font-weight: bold;
+}

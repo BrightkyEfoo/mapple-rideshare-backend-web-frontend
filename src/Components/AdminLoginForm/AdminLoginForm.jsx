@@ -17,8 +17,8 @@ const AdminLoginForm = ({ type }) => {
       .get(`https://mapple-rideshare-backend-nau5m.ondigitalocean.app/front-end/?name=adminloginform&language=EN`)
       .then(res => {
         setData(res.data.view.content);
-        document.title = 'admin login';
-        // setForm(prev => ({...prev , accessLevel : Location.pathname === '/maple-ride-admin' ? 3 : 0}))
+        document.title = `${type} login`;
+        // setForm(prev => ({...prev , accessLevel : Location.pathname === '/Board_@ADN0223' ? 3 : 0}))
       })
       .catch(err => {
         console.log('err', err);
@@ -34,7 +34,7 @@ const AdminLoginForm = ({ type }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     axios
-      .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/admin/login', form)
+      .post('https://mapple-rideshare-backend-nau5m.ondigitalocean.app/admin/login', { ...form, type })
       .then(res => {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);

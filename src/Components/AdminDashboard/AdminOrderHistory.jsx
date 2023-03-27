@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AdminBookHistoryActions } from '../../rtk/features/AdminBookHistory';
 import { DataGrid } from '@mui/x-data-grid';
-import './style.css'
+import './style.css';
 
 const AdminOrderHistory = () => {
   // const [first, setfirst] = useState(second)
@@ -31,6 +31,7 @@ const AdminOrderHistory = () => {
             dispatch(AdminBookHistoryActions.setHistory(res.data.history));
           })
           .catch(err => {
+            clearInterval(myInter);
             console.log('err', err);
           });
       }, 300000)
@@ -106,13 +107,14 @@ const AdminOrderHistory = () => {
 
   return (
     history && (
-      <div className='admin-order-hitory-container'>
+      <div className="admin-order-hitory-container">
         <div>
           <DataGrid
             rows={history}
             columns={columns}
-            pageSize={8}
-            rowsPerPageOptions={[5]}
+            pageSize={10}
+            pageSizeOptions={[10]}
+            rowsPerPageOptions={[10]}
             // checkboxSelection
             style={{ textJustify: 'left', minHeight: 500 }}
           />

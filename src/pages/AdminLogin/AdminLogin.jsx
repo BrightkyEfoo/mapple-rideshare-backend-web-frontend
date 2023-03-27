@@ -1,11 +1,11 @@
 import React from 'react'
 import AdminLoginForm from '../../Components/AdminLoginForm/AdminLoginForm'
 import './style.css'
-const AdminLogin = () => {
+const AdminLogin = ({type}) => {
     
   return (
     <div className='admin-login-container'>
-        <AdminLoginForm />
+        <AdminLoginForm type={type} />
     </div>
   )
 }

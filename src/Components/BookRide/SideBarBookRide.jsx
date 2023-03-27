@@ -11,6 +11,7 @@ import { IoArrowRedoCircleSharp } from 'react-icons/io5';
 import { useMediaQuery } from 'react-responsive';
 import PlacesAutocomplete from '../Map/PlaceAutoComplete';
 import PlaceAutoComplete2 from '../Map/PlaceAutoComplete2';
+import { NotificationActions } from '../../rtk/features/Notificarion';
 
 const SideBarBookRide = ({ data }) => {
   // console.log('data', data)
@@ -55,6 +56,12 @@ const SideBarBookRide = ({ data }) => {
       })
       .catch(err => {
         console.log('err', err);
+        console.log('data err', err.response.data.code);
+        if (err.response.data.code === 'NO_DRIVERS') {
+          console.log('dispatched');
+          dispatch(NotificationActions.addContent({ severity: 'warning', value: err.response.data.msg }));
+          dispatch(NotificationActions.setIsVisible(true));
+        }
       });
   };
 
@@ -161,7 +168,6 @@ const SideBarBookRide = ({ data }) => {
                     //       const lat = position.coords.latitude;
                     //       const lng = position.coords.longitude;
                     //       dispatch(BookRideActions.setRoute({ ...bookRide.route, start: `${lat.toFixed(2)} , ${lng.toFixed(2)}` }));
-
                     //       dispatch(BookRideActions.setStartCoord({ lat, lng }));
                     //     },
                     //     err => {
@@ -174,14 +180,16 @@ const SideBarBookRide = ({ data }) => {
                   <label>{el.label}</label>
                   <div>
                     <MdLocationOn color={i === 0 ? '#02A238' : '#ED1A43'} size={17} />
-                    {(i === 1 || i===0) && <PlaceAutoComplete2 key={i} point={i === 0 ? 'start' : 'end'} placeholder={el.placeholder} />}
+                    {(i === 1 || i === 0) && <PlaceAutoComplete2 key={i} point={i === 0 ? 'start' : 'end'} placeholder={el.placeholder} />}
                     {/* {i === 0 && <p>bookRide.startLongNameSelect your location</p>} */}
                   </div>
                 </div>
               );
             })}
           </div>
-          <button className={bookRide.route.start && bookRide.route.end ? 'success' : 'simple'} onClick={handleClick1}>{data.part1.button.value}</button>
+          <button className={bookRide.route.start && bookRide.route.end ? 'success' : 'simple'} onClick={handleClick1}>
+            {data.part1.button.value}
+          </button>
         </div>
       )}
       {bookRidePosition === 1 && (

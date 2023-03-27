@@ -1,12 +1,15 @@
 import { DirectionsRenderer, DirectionsService, GoogleMap, Marker, Polyline, useJsApiLoader, useLoadScript } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import { NotificationActions } from '../../rtk/features/Notificarion';
 
 const Bigmap = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 600px)' });
   const isTablet = useMediaQuery({ query: '(max-width: 920px)' });
+  const dispatch = useDispatch();
   const isSmallTablet = useMediaQuery({ query: '(max-width: 730px)' });
+  const [previous, setPrevious] = useState(null);
   const Bookride = useSelector(state => state.BookRide);
   const containerStyle = {
     width: isTablet ? 'calc(100vw - 16px)' : '650px',
@@ -20,13 +23,22 @@ const Bigmap = () => {
   };
   const [response, setResponse] = useState(null);
   const directionsCallback = res => {
-    console.log(res);
+    console.log('directions', res);
 
     if (res !== null) {
       if (res.status === 'OK') {
+        setPrevious('OK')
         setResponse(res);
       } else {
         console.log('response: ', res);
+        if (res.status === 'ZERO_RESULTS') {
+          if (previous === 'OK') {
+            dispatch(NotificationActions.addContent({ severity: 'warning', value: 'can make the ride by driving' }));
+            dispatch(NotificationActions.setIsVisible(true));
+            setResponse(0);
+          }
+        }
+        setPrevious('KO');
       }
     }
   };
@@ -39,7 +51,7 @@ const Bigmap = () => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={Bookride.centerCoord}
-        options={{ restriction: { latLngBounds: CANADA_BOUNDS, strictBounds: false } , minZoom : 2.7 }}
+        options={{ restriction: { latLngBounds: CANADA_BOUNDS, strictBounds: false }, minZoom: 2.7 }}
         zoom={13} /*onLoad={onLoad} onUnmount={onUnmount}*/
       >
         {/* Child components, such as markers, info windows, etc. */}

@@ -18,8 +18,15 @@ const OrderHistoryView = () => {
   const isSmallTablet = useMediaQuery({ query: '(max-width: 730px)' });
   const [reload, setReload] = useState(false);
   const dispatch = useDispatch();
+  const [isPlaying, setIsPlaying] = useState(false);
   const history = useSelector(state => state.BookRide.history);
   socket.on('notification', data => {
+    if (data.pop_up.status === 'END') {
+      console.log('lancé');
+      // audioNotificationRef.current.load();
+      // audioNotificationRef.current.play();
+      setIsPlaying(true);
+    }
     console.log('order history reloaded on notification');
     setReload(!reload);
   });
@@ -120,44 +127,84 @@ const OrderHistoryView = () => {
           headerName: 'actions',
           width: 150,
           renderCell: params => {
-            console.log('params', params.row)
+            // console.log('params', params.row);
             return (
-              params.row.state === 3 && !params.row.riderConfirm && (
-                <div>
-                  <p>Is this ride ended</p>
+              <>
+                {params.row.state === 3 && params.row.riderConfirm === 0 && (
                   <div>
-                    <button
-                      className="btn-primary-success"
-                      onClick={() => {
-                        axios
-                          .post(
-                            'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/confirm',
-                            {
-                              userId: user.id,
-                              bookingId: params.id,
-                            },
-                            {
-                              headers: {
-                                Authorization: token,
+                    <p>Is this ride ended</p>
+                    <div>
+                      <button
+                        className="btn-primary-success"
+                        onClick={() => {
+                          // audioNotificationRef.current.pause();
+                          setIsPlaying(false);
+
+                          axios
+                            .post(
+                              'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/confirm',
+                              {
+                                userId: user.id,
+                                bookingId: params.id,
+                                riderConfirm: 1,
                               },
-                            }
-                          )
-                          .then(res => {
-                            dispatch(NavBarActions.reload());
-                            dispatch(NotificationActions.setRate({ isVisible: true, bookingId: params.row?.id }));
-                            console.log('res.data', res.data);
-                          })
-                          .catch(err => {
-                            console.log('err', err);
-                          });
-                      }}
-                    >
-                      Yes
-                    </button>
-                    <button className="btn-primary-error">No</button>
+                              {
+                                headers: {
+                                  Authorization: token,
+                                },
+                              }
+                            )
+                            .then(res => {
+                              dispatch(NavBarActions.reload());
+                              setReload(!reload);
+                              dispatch(NotificationActions.setRate({ isVisible: true, bookingId: params.row?.id }));
+                              console.log('res.data', res.data);
+                            })
+                            .catch(err => {
+                              console.log('err', err);
+                            });
+                        }}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        className="btn-primary-error"
+                        onClick={() => {
+                          // audioNotificationRef.current.pause();
+                          setReload(!reload);
+                          setIsPlaying(false);
+                          axios
+                            .post(
+                              'https://mapple-rideshare-backend-nau5m.ondigitalocean.app/map/booking/confirm',
+                              {
+                                userId: user.id,
+                                bookingId: params.id,
+                                riderConfirm: -1,
+                              },
+                              {
+                                headers: {
+                                  Authorization: token,
+                                },
+                              }
+                            )
+                            .then(res => {
+                              dispatch(NavBarActions.reload());
+                              setReload(!reload);
+                              dispatch(NotificationActions.setRate({ isVisible: true, bookingId: params.row?.id }));
+                              console.log('res.data', res.data);
+                            })
+                            .catch(err => {
+                              console.log('err', err);
+                            });
+                        }}
+                      >
+                        No
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )
+                )}
+                {params.row.state === 3 && params.row.riderConfirm ? <p>{params.row.riderConfirm === 1 ? 'Yes' : 'No'}</p> : null}
+              </>
             );
           },
         },
@@ -224,7 +271,7 @@ const OrderHistoryView = () => {
           headerName: 'price',
           width: 80,
           renderCell: params => {
-            return <div>{params.row.price-3}</div>;
+            return <div>{params.row.price - 3}</div>;
           },
         },
         {
@@ -238,34 +285,7 @@ const OrderHistoryView = () => {
         },
       ];
 
-  // const columnsRef = useRef({ columns });
-
-  // useEffect(() => {
-  //   if (isMobile) {
-  //     columnsRef.current.columns = [
-  //       {
-  //         field: 'driver',
-  //         headerName: 'driver',
-  //         width: isSmallTablet ? 80 : isTablet ? 100 : 150,
-  //         renderCell: params => {
-  //           return <div>{params.row.driver.lastName + ' ' + params.row.driver.firstName}</div>;
-  //         },
-  //       },
-  //       { field: 'start', headerName: 'start', width: isSmallTablet ? 70 : isTablet ? 100 : 200 },
-  //       { field: 'end', headerName: 'end', width: isSmallTablet ? 70 : 100 },
-  //       {
-  //         field: 'actions',
-  //         headerName: 'actions',
-  //         width: 50,
-  //         renderCell: params => {
-  //           return <GrOverview title={'lock the user ' + params.row.userName} size={20} color="#3b3b3b" />;
-  //         },
-  //       },
-  //     ];
-  //   } else {
-  //     columnsRef.current.columns = columns;
-  //   }
-  // }, [isMobile, isSmallTablet, isTablet]);
+  const audioNotificationRef = useRef();
 
   return (
     history && (
@@ -273,14 +293,20 @@ const OrderHistoryView = () => {
         <DataGrid
           rows={history}
           columns={user.accessLevel === 1 ? columnsDriver : columns}
-          pageSize={8}
+          pageSize={10}
           sx={{
             fontSize: '0.7rem',
           }}
-          rowsPerPageOptions={[5]}
+          rowsPerPageOptions={[10]}
+          pageSizeOptions={[10]}
           // checkboxSelection
           style={{ textJustify: 'left', minHeight: 500 }}
         />
+        {isPlaying && (
+          <audio className="display-none" ref={audioNotificationRef} loop autoPlay>
+            <source src={'longnotif.mp3'} />
+          </audio>
+        )}
       </div>
     )
   );

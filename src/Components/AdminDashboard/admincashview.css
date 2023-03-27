@@ -1,0 +1,27 @@
+.admin-cash-view-container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+.admin-cash-view-container > p:first-child > span.balance {
+  font-weight: bold;
+  font-size: 32px;
+}
+
+.admin-cash-view-container > p:nth-child(2) > span.balance {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.admin-cash-view-container > p:nth-child(2) {
+  color: rgb(88, 143, 6);
+  font-size: 20px;
+  align-self: center;
+}
+
+.admin-cash-view-container > p:nth-child(1) {
+  align-self: center;
+}

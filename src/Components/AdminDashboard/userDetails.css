@@ -24,10 +24,9 @@
   cursor: pointer;
 }
 
-.user-details-edit > input[type='file']{
-    display: none;
+.user-details-edit > input[type='file'] {
+  display: none;
 }
-
 
 .user-details-edit input[type='text'],
 .user-details-edit input[type='password'],
@@ -57,7 +56,6 @@
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(9) {
-  
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(10) {
@@ -85,7 +83,7 @@
   font-weight: bold;
   background-color: var(--primary-red);
   border-radius: 30px;
-  border : none
+  border: none;
 }
 
 .user-details-edit > div:nth-child(2) > div:nth-child(11) > div {
@@ -100,7 +98,7 @@
   color: var(--primary-red);
 }
 
-.admin-settings-view-actions-buttons > button{
+.admin-settings-view-actions-buttons > button {
   border-radius: 50%;
   padding: 5px;
   aspect-ratio: 1/1;
@@ -110,32 +108,43 @@
   justify-content: center;
   border: none;
 }
+.admin-settings-view-actions-buttons > div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
 
-.admin-settings-view-actions-buttons > div{
+.admin-settings-view-actions-buttons > div > div {
   /* border-radius: 50%; */
   padding: 5px;
   /* aspect-ratio: 1/1; */
   width: 100px;
-  height: 40px;
+  /* height: 40px; */
   display: flex;
   align-items: center;
   justify-content: center;
   padding-left: 15px;
+  border: 0.5px solid rgba(0, 0, 0, 0.233);
   padding-right: 15px;
   cursor: pointer;
-  border: none;
+  height: 40%;
+  font-size: 11px;
+  /* border: none; */
   background-color: #f0f0f0;
   transition: all ease 500ms;
 }
 
-.admin-settings-view-actions-buttons > div:hover{
+.admin-settings-view-actions-buttons > div > div:hover {
   background-color: #868585;
   border-radius: 15px;
 }
 
-.admin-settings-view-actions-buttons{
+.admin-settings-view-actions-buttons {
   display: flex;
   width: 100%;
+  /* gap: ; */
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 }

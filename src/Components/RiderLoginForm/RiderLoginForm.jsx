@@ -9,7 +9,7 @@ import { DigitInputs, Digit } from 'digitinputs-react';
 import 'digitinputs-react/dist/index.css';
 import { RiderLoginFormActions } from '../../rtk/features/RiderLoginFormSlice';
 // import cities from 'cities.json';
-import { cities } from '../../helpers/cities';
+// import { cities } from '../../helpers/cities';
 import { Country, State, City } from 'country-state-city';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
@@ -65,6 +65,10 @@ const RiderLoginForm = () => {
   const isVisible = useSelector(state => state.RiderLoginForm.isVisible);
   const position = useSelector(state => state.RiderLoginForm.position);
   const type = useSelector(state => state.RiderLoginForm.type);
+  const [thirdPartyMessage, setThirdPartyMessage] = useState({
+    title : '',
+    main : ''
+  });
   //   const location = useLocation();
   useEffect(() => {
     axios
@@ -166,7 +170,12 @@ const RiderLoginForm = () => {
         .then(res => {
           console.log('res.data', res.data);
           localStorage.setItem('token', res.data.token);
-          dispatch(RiderLoginFormActions.goForward());
+          if (res.data.status === 'DRIVER_OK') {
+            dispatch(RiderLoginFormActions.setPosition(2));
+            setThirdPartyMessage({title : res.data.TPM.title , main : res.data.TPM.main})
+          } else {
+            dispatch(RiderLoginFormActions.goForward());
+          }
           // localStorage.setItem('user', JSON.stringify(res.data.user))
         })
         .catch(err => {
@@ -220,6 +229,14 @@ const RiderLoginForm = () => {
         navigate('/dashboard');
       })
       .catch(err => {
+        setLoginError({ isError: true, msg: err.response.data?.msg });
+        if (err.response.data?.code === 'UNVALIDATED') {
+          setTimeout(() => {
+            setLoginError({ isError: false, msg: '' });
+            dispatch(RiderLoginFormActions.setIsVisible(false));
+            dispatch(RiderLoginFormActions.setPosition(0));
+          }, 10000);
+        }
         console.log('err', err);
       });
   };
@@ -447,6 +464,21 @@ const RiderLoginForm = () => {
             </div>
           </div>
         )}
+        {position === 2 && (
+          <div className="rider-login-form-2">
+            <div>
+              <HiArrowLeft
+                onClick={() => {
+                  dispatch(RiderLoginFormActions.setPosition(0));
+                }}
+              />
+              <p>{thirdPartyMessage.title}</p>
+            </div>
+            <div>
+              <p>{thirdPartyMessage.main}</p>
+            </div>
+          </div>
+        )}
         {loginError.isError && <div className="error-alert">{loginError.msg}</div>}
       </div>
     ) : (
@@ -466,6 +498,8 @@ const RiderLoginForm = () => {
                     <input
                       // name={el.title === 'Email' ? 'email' : 'passowrd'}
                       type={el.type}
+                      autoComplete={el.title === 'Email' ? 'off' : 'new-passowrd'}
+                      role="presentation"
                       onChange={handleChangeByName}
                       placeholder={el.placeholder}
                       name={el.title.toLowerCase()}

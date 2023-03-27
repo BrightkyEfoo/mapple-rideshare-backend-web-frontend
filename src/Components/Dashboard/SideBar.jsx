@@ -22,7 +22,7 @@ const SideBar = ({ collapseMenu }) => {
   const [hovered, setHovered] = useState(null);
   const navigate = useNavigate();
   const handleLogOut = e => {
-    socket.emit('logout' , {userId : User.id})
+    socket.emit('logout', { userId: User.id });
     navigate('/');
     localStorage.removeItem('user');
     localStorage.removeItem('token');
@@ -67,24 +67,26 @@ const SideBar = ({ collapseMenu }) => {
         <p>Book Ride</p>
         {NavBarState.selected === 2 && <div className="dashboard-side-bar-triangle"></div>}
       </div>
-
-      <div
-        className={NavBarState.selected === 3 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
-        onClick={e => {
-          console.log('first', { element: e.target });
-          if (isMobile) {
-            collapseMenu();
-          }
-        }}
-      >
-        <GiMoneyStack size={20} />
-        <p>Payment</p>
-        {NavBarState.selected === 8 && <div className="dashboard-side-bar-triangle"></div>}
-      </div>
+      {User.accessLevel > 0 && (
+        <div
+          className={NavBarState.selected === 3 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
+          onClick={e => {
+            console.log('first', { element: e.target });
+            if (isMobile) {
+              collapseMenu();
+            }
+            dispatch(NavBarActions.setSelected(3))
+          }}
+        >
+          <GiMoneyStack size={20} />
+          <p>Withdraw</p>
+          {NavBarState.selected === 3 && <div className="dashboard-side-bar-triangle"></div>}
+        </div>
+      )}
       <div
         className={NavBarState.selected === 4 ? 'dashboard-side-bar-button-container selected' : 'dashboard-side-bar-button-container'}
         onClick={e => {
-          dispatch(NavBarActions.setSelected(4));
+          // dispatch(NavBarActions.setSelected(4));
           if (isMobile) {
             collapseMenu();
           }
